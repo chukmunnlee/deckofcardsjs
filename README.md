@@ -1,6 +1,9 @@
 # Deck of Cards API
 
-A deck of cards API inspired by [Deck of Cards API](https://www.deckofcardsapi.com/). The server is written in Golang using [Gin Gonic](https://github.com/gin-gonic/gin) web framework.
+
+A deck of cards API inspired by [Deck of Cards API](https://www.deckofcardsapi.com/). The server is written in Types using [NestJS](https://nestjs.com/) web framework.
+
+## WIP
 
 Check out a deployed version at [deckofcards.chuklee.com](https://deckofcards.chuklee.com).
 
