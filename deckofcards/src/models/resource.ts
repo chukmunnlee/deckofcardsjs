@@ -5,6 +5,7 @@ export interface Metadata {
 }
 
 export interface Resource {
+  _id?: string
   apiVersion: string
   kind: string
   metadata: Metadata

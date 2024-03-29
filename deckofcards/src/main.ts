@@ -1,35 +1,36 @@
 import { NestFactory } from '@nestjs/core';
 import {NestExpressApplication} from '@nestjs/platform-express';
 
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers'
-
 import { AppModule } from './app.module';
 import {ConfigService} from './services/config.service';
-import {loadDecks} from './utils';
+import {loadDecks, createDatabaseConnection } from './utils';
+import {DecksService} from './repositories/decks';
 
-const USAGE = 'Usage: $0 --cors --port [num] --games [num] --decksDir [directory] --drop'
-const argv = yargs(hideBin(process.argv))
-		.usage(USAGE)
-		.boolean(['cors'])
-		.default('port', 3000)
-		.default('cors', true)
-		.default('games', 10)
-		.default('decksDir', '')
-		.default('drop', false)
-		.parse()
-
-async function bootstrap(argv: any) {
-
-  const PORT = argv.port
+async function bootstrap() {
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const configSvc = app.get(ConfigService)
-  configSvc.argv = argv
+  const decksSvc = app.get(DecksService)
+  const PORT = configSvc.port
+
+  const client = createDatabaseConnection(configSvc.mongodbUri)
+  decksSvc.client = client
 
   if (configSvc.loadDecks) {
-    loadDecks(configSvc.decksDir)
+    const decks = loadDecks(configSvc.decksDir)
+    let p: Promise<any>
+    if (configSvc.drop)
+      p = decksSvc.drop()
+        .then(() => decksSvc.load(decks))
+    else
+      p =decksSvc.load(decks)
+
+    p.then(result => console.info('Decks loaded: ', result.insertedCount ))
+     .catch((err: any) => {
+        console.error('Cannot load decks\n', err)
+        process.exit(-1)
+     })
   }
 
   if (configSvc.enableCors)
@@ -43,4 +44,4 @@ async function bootstrap(argv: any) {
 }
 
 
-bootstrap(argv);
+bootstrap();

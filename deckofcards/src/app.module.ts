@@ -1,18 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './controllers/app.controller';
 import {ConfigService} from './services/config.service';
+import {DecksService} from './repositories/decks';
 
 @Module({
   imports: [],
   controllers: [AppController],
-  providers: [ ConfigService ],
+  providers: [ ConfigService, DecksService ],
 })
 export class AppModule {
 
-  constructor(private configSvc: ConfigService) { }
-
-  onApplicationBootstrap() {
-    console.info(`Game instance: ${this.configSvc.games}`)
-    console.info(`Load deck: ${this.configSvc.loadDecks}`)
-  }
 }

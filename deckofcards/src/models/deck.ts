@@ -5,7 +5,7 @@ export interface Card {
   value: string
   code: string
   image: string
-  images: { [ name: string]: string }[]
+  images: { [ key: string ]: string }[]
 }
 
 export interface DeckSpec {
