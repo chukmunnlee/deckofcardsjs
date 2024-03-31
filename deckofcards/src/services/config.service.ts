@@ -1,16 +1,23 @@
-import {Injectable} from "@nestjs/common";
+import {Injectable, OnModuleInit} from "@nestjs/common";
+import {DecksRepository} from "src/repositories/decks.repository";
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers'
 
+import {loadDecks, createDatabaseConnection } from '../utils';
+import {GamesRepository} from "src/repositories/games.repository";
+
 const USAGE = 'Usage: $0 --cors --port [num] --games [num] --decksDir [directory] --drop --mongodbUri [string]'
 
 @Injectable()
-export class ConfigService {
+export class ConfigService implements OnModuleInit {
 
   argv: any = null;
 
-  constructor() {
+  private _ready = false
+
+  constructor(private readonly decksRepo: DecksRepository
+      , private readonly gamesRepo: GamesRepository) {
     this.argv = yargs(hideBin(process.argv))
 		.usage(USAGE)
 		.boolean(['cors', 'drop'])
@@ -30,5 +37,33 @@ export class ConfigService {
   get enableCors() { return this.argv.cors }
   get port() { return this.argv.port }
   get mongodbUri() { return this.argv.mongodbUri }
+  get ready() { return this._ready }
+
+  onModuleInit() {
+
+    const client = createDatabaseConnection(this.mongodbUri)
+    this.decksRepo.client = client
+    this.gamesRepo.client = client
+
+    if (this.loadDecks) {
+      const decks = loadDecks(this.decksDir)
+      let p: Promise<any>
+      if (this.drop)
+        p = this.decksRepo.drop()
+          .then(() => this.decksRepo.load(decks))
+      else
+        p = this.decksRepo.load(decks)
+
+      p.then(result => {
+        console.info('Decks loaded: ', result.insertedCount )
+        this._ready = true
+      })
+      .catch((err: any) => {
+          console.error('Cannot load decks\n', err)
+          process.exit(-1)
+       })
+    } else
+      this._ready = true
+  }
 
 }

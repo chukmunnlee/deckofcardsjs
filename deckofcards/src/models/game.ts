@@ -1,0 +1,19 @@
+import {Card} from "./deck"
+
+export interface Game {
+  gameId: string
+  deckId: string
+  piles: { [ key: string ]: Pile }
+  count: number
+  split: number
+  shuffle: boolean, 
+  replacement: boolean,
+  createdOn: number
+  lastUpdate: number
+  password: string
+}
+
+export interface Pile {
+  name: string
+  cards: Card[]
+}

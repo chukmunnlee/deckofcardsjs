@@ -9,7 +9,7 @@ Check out a deployed version at [deckofcards.chuklee.com](https://deckofcards.ch
 ### Card Decks
 
 - `GET /api/decks` - get a list of all registered decks
-- `GET /api/deck/:deck_id/cards` - list all the cards from a deck
+- `GET /api/deck/:deck_id` - list all the cards from a deck
 
 ### Deck Instance
 

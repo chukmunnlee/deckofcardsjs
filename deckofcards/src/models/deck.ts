@@ -1,11 +1,12 @@
 import {Resource} from "./resource"
 
 export interface Card {
-  suit: string
-  value: string
   code: string
   image: string
   images: { [ key: string ]: string }[]
+  suit: string
+  value: string
+  count?: number
 }
 
 export interface DeckSpec {
@@ -17,3 +18,8 @@ export interface Deck extends Resource {
   spec: DeckSpec
 }
 
+export interface DeckSummary {
+  id: string
+  name: string
+  description?: string
+}
