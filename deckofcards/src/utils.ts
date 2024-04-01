@@ -1,7 +1,7 @@
 import { join } from 'node:path'
 import { readdirSync, existsSync, readFileSync } from 'node:fs'
 import * as yaml from 'js-yaml'
-import {Card, Deck} from './models/deck'
+import {Card, Deck} from 'common/models/deck'
 import {MongoClient} from 'mongodb'
 
 export const loadDecks = (decksDir: string): Deck[] => {

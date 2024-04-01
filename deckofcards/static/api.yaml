@@ -1,0 +1,161 @@
+openapi: 3.1.0
+
+info:
+  title: Deck of Cards
+  version: 0.0.1
+  summary: REST API to serve any deck of cards
+  description: |
+    This implementation is inspired by [deckofcardsapi.com](https://www.deckofcardsapi.com/)
+  license:
+    name: MIT
+    identifier: MIT
+
+servers:
+- url: http://localhost:3000
+  description: Local development server
+
+paths:
+  /api/decks:
+    get:
+      summary: List of all available decks
+      operationId: listDecks
+      tags:
+      - deck
+      responses:
+        '200': 
+          description: Summary of available decks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GETApiDecksResponse"
+
+  /api/deck/{deckId}/cards:
+    get:
+      summary: Get deck's cards
+      operationId: getDeckCards
+      tags:
+      - deck
+      parameters:
+      - name: deckId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of all the cards from a deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GETApiDeckDeckIdResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    # Responses
+    GETApiDecksResponse:
+      title: GETApiDecksResponse
+      description: Response from GET /api/decks
+      type: array
+      minItems: 0
+      items:
+        $ref: "#/components/schemas/DeckSummary"
+
+    GETApiDeckDeckIdResponse:
+      title: GETApiDeckDeckIdResponse
+      description: Response from GET /api/deck/{deckId}/cards
+      type: object
+      $ref: "#/components/schemas/Deck"
+
+    ErrorResponse:
+      title: Error 
+      description: Common error 
+      type: object
+      required: [ statusCode, message ]
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+
+    # Models
+    Metadata:
+      title: Metadata
+      description: Metadata
+      type: object
+      required: [ id, name ]
+      properties:
+        id: 
+          type: string
+        name: 
+          type: string
+        description: 
+          type: string
+
+    Deck:
+      title: Deck 
+      description: Deck 
+      type: object
+      required: [ apiVersion, kind, metadata, spec ]
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+        spec:
+          $ref: "#/components/schemas/DeckSpec"
+
+    DeckSpec:
+      title: DeckSpec
+      description: Deck specification
+      type: object
+      required: [ backImage, cards ]
+      properties:
+        backImage: 
+          type: string
+        cards: 
+          type: array
+          items:
+            $ref: "#/components/schemas/Card"
+        
+    DeckSummary:
+      title: Deck summary
+      description: Short information about the deck
+      type: object
+      required: [ deckId, name ]
+      properties:
+        deckId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+
+    Card:
+      title: Card
+      description: Card information
+      type: object
+      required: [ code, image, images, suit, value ]
+      properties:
+        code: 
+          type: string
+        image: 
+          type: string
+        images: 
+          type: object
+          additionalProperties:
+            type: string
+        suit: 
+          type: string
+        value: 
+          type: string
+        count: 
+          type: integer
+          default: 1

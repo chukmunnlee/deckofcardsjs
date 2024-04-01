@@ -19,7 +19,7 @@ export interface Deck extends Resource {
 }
 
 export interface DeckSummary {
-  id: string
+  deckId: string
   name: string
   description?: string
 }

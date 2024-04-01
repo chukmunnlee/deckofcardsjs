@@ -1,12 +1,12 @@
 import { v4 as uuidv4 } from 'uuid'
 import {BadRequestException, Injectable, NotFoundException, ServiceUnavailableException} from "@nestjs/common";
-import {PostDeckById} from "src/models/request";
 import {DecksRepository} from "src/repositories/decks.repository";
 import {ConfigService} from "./config.service";
 import {GamesRepository} from "src/repositories/games.repository";
-import {Card, Deck } from "src/models/deck";
 import {constructDeck, shuffle} from "src/utils";
-import {Game, Pile} from "src/models/game";
+import {Game, Pile} from "common/models/game";
+import { Deck } from "common/models/deck";
+import {PostDeckById} from "common/models/request";
 
 @Injectable()
 export class DecksService {

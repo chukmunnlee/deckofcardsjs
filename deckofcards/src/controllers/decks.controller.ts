@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Get, Header, HttpCode, HttpStatus, NotFoundException, Param, Post } from '@nestjs/common';
 
-import { DeckSummary } from 'src/models/deck'
-import {PostDeckById} from 'src/models/request';
-import {CreateGameResponse, DeckBackImageResponse} from 'src/models/response';
+import { DeckSummary } from 'common/models/deck'
+import {PostDeckById} from 'common/models/request';
+import {CreateGameResponse, DeckBackImageResponse} from 'common/models/response';
 import {DecksRepository} from 'src/repositories/decks.repository';
 import {DecksService} from 'src/services/decks.service';
 
@@ -16,7 +16,7 @@ export class DecksController {
     return this.decksRepo.getDecksSummary()
   }
 
-  @Get('/deck/:deckId')
+  @Get('/deck/:deckId/cards')
   getDeckById(@Param('deckId') deckId: string) {
     return this.decksRepo.findDeckById(deckId, new NotFoundException(`Cannot find deckId = ${deckId}`))
   }
@@ -25,7 +25,7 @@ export class DecksController {
   @Header('Cache-Control', 'public,max-age=3600')
   getBackImageById(@Param('deckId') deckId: string) {
     return this.decksRepo.getBackImageById(deckId, new NotFoundException(`Cannot find deckId = ${deckId}`))
-        .then(backImage => ({ success: true, backImage } as DeckBackImageResponse))
+        .then(backImage => ({ backImage } as DeckBackImageResponse))
   }
 
   @Post('/deck')
@@ -34,7 +34,7 @@ export class DecksController {
     console.info('>>> form: ', form)
     return this.deckSvc.createGame(form)
         .then(game => (
-          { success: true, gameId: game.gameId, password: game.password } as CreateGameResponse)
+          { gameId: game.gameId, password: game.password } as CreateGameResponse)
         )
         .catch(err => { throw new BadRequestException(err) })
   }

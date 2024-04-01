@@ -1,6 +1,6 @@
 import {HttpException, Injectable} from "@nestjs/common";
 import {Collection, MongoClient} from "mongodb";
-import { Deck, DeckSummary} from "src/models/deck";
+import { Deck, DeckSummary} from "common/models/deck";
 
 @Injectable()
 export class DecksRepository {
@@ -26,7 +26,7 @@ export class DecksRepository {
       .toArray()
       .then(results => 
         results.map(d => ({
-          id: d['_id'],
+          deckId: d['_id'],
           name: d['metadata']['name'],
           description: d['metadata']['description']
         } as DeckSummary))

@@ -1,7 +1,7 @@
 import {HttpException, Injectable} from "@nestjs/common";
 
 import {Collection, MongoClient} from "mongodb";
-import {Game} from "src/models/game";
+import {Game} from "common/models/game";
 
 @Injectable()
 export class GamesRepository {
