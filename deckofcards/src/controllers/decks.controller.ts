@@ -30,9 +30,8 @@ export class DecksController {
 
   @Post('/deck')
   @HttpCode(HttpStatus.CREATED)
-  postDeckById(@Body() form: PostDeckById) {
-    console.info('>>> form: ', form)
-    return this.deckSvc.createGame(form)
+  postDeckById(@Body() payload: PostDeckById) {
+    return this.deckSvc.createGame(payload)
         .then(game => (
           { gameId: game.gameId, password: game.password } as CreateGameResponse)
         )

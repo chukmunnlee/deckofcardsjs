@@ -29,10 +29,47 @@ paths:
               schema:
                 $ref: "#/components/schemas/GETApiDecksResponse"
 
+  /api/deck:
+    post:
+      summary: Create a deck instance
+      operationId: createDeck
+      tags:
+      - deck
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/POSTDeckRequest"
+      responses:
+        '200':
+          description: Created new deck 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/POSTDeckResponse'
+        '400':
+          description: Cannot create deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Cannot find deck name or deck id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Exceeded the number of decks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /api/deck/{deckId}/cards:
     get:
       summary: Get deck's cards
-      operationId: getDeckCards
+      operationId: getDeckCardsByDeckId
       tags:
       - deck
       parameters:
@@ -56,34 +93,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
 components:
-  schemas:
-    # Responses
-    GETApiDecksResponse:
-      title: GETApiDecksResponse
-      description: Response from GET /api/decks
-      type: array
-      minItems: 0
-      items:
-        $ref: "#/components/schemas/DeckSummary"
-
-    GETApiDeckDeckIdResponse:
-      title: GETApiDeckDeckIdResponse
-      description: Response from GET /api/deck/{deckId}/cards
-      type: object
-      $ref: "#/components/schemas/Deck"
-
-    ErrorResponse:
-      title: Error 
-      description: Common error 
-      type: object
-      required: [ statusCode, message ]
-      properties:
-        statusCode:
-          type: integer
-        message:
-          type: string
-
-    # Models
+  schemas: #Models
     Metadata:
       title: Metadata
       description: Metadata
@@ -159,3 +169,67 @@ components:
         count: 
           type: integer
           default: 1
+             
+    # Requests
+    POSTDeckRequest:
+      title: POSTDeckRequest
+      description: Request for POST /api/deck
+      type: object
+      anyOf:
+      - required: [ deckId ]
+      - required: [ name ]
+      properties:
+        shuffle: 
+          type: boolean
+          default: true
+        replacement: 
+          type: boolean
+          default: false
+        count: 
+          type: number
+          default: 1
+        split: 
+          type: number
+          default: 1
+        deckId: 
+          type: string
+        name: 
+          type: string
+             
+    # Responses
+    GETApiDecksResponse:
+      title: GETApiDecksResponse
+      description: Response from GET /api/decks
+      type: array
+      minItems: 0
+      items:
+        $ref: "#/components/schemas/DeckSummary"
+
+    GETApiDeckDeckIdResponse:
+      title: GETApiDeckDeckIdResponse
+      description: Response from GET /api/deck/{deckId}/cards
+      type: object
+      $ref: "#/components/schemas/Deck"
+
+    POSTDeckResponse:
+      title: POSTDeckResponse
+      description: Response from POST /api/deck
+      type: object
+      required: [ gameId, password ]
+      properties:
+        gameId:
+          type: string
+        password:
+          type: string
+
+    ErrorResponse:
+      title: Error 
+      description: Common error 
+      type: object
+      required: [ statusCode, message ]
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+
