@@ -17,3 +17,13 @@ export interface Pile {
   name: string
   cards: Card[]
 }
+
+export interface GameStatus {
+  gameId: string
+  deckId: string
+  piles: { [ key: string ]: number }
+  count: number
+  split: number
+  shuffle: boolean, 
+  replacement: boolean
+}

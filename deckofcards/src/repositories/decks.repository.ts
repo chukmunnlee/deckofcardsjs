@@ -20,6 +20,10 @@ export class DecksRepository {
     return this.decks.insertMany(_decks)
   }
 
+  countDecks(): Promise<number> {
+    return this.decks.countDocuments()
+  }
+
   getDecksSummary(): Promise<DeckSummary[]> {
     return this.decks.find({})
       .project({ 'metadata.name': 1, 'metadata.description': 1 })

@@ -17,6 +17,11 @@ export class GamesRepository {
     return this.games.insertOne({ _id: game.gameId, ...game })
   }
 
+  getGameById(gameId: string): Promise<Game> {
+    // @ts-ignore
+    return this.games.findOne({ _id: gameId })
+  }
+
   getGameCount(): Promise<number> {
     return this.games.countDocuments()
   }
