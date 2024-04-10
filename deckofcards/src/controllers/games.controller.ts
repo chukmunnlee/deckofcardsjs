@@ -20,11 +20,12 @@ export class GamesController {
   @Patch('/game/:gameId')
   patchGame(@Param('gameId') gameId: string, @Body() gameRequest: PatchGameDrawCard) {
     let patchReq: PatchGameDrawCard = {
-      count: 1, pileName: 'pile0', location: 'top'
+      count: 1, pileName: 'pile0', location: 'top', positions: [], codes: []
     }
+
     if (!!gameRequest)
       patchReq = { ...patchReq, ...gameRequest } 
 
+    return this.gamesSvc.drawCard(gameId, patchReq)
   }
-
 }
