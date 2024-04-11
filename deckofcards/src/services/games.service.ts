@@ -10,8 +10,7 @@ import {shuffle} from "src/utils";
 @Injectable()
 export class GamesService {
 
-  constructor(private readonly decksRepo: DecksRepository
-      , private readonly gamesRepo: GamesRepository) { }
+  constructor(private readonly gamesRepo: GamesRepository) { }
 
   getGameStatus(gameId: string) {
     return this.gamesRepo.getGameById(gameId)
@@ -45,13 +44,17 @@ export class GamesService {
     if (patchReq?.codes.length > 0) {
       // Get code from pile
       remain = [ ...game.piles[patchReq.pileName].cards ]
+outer: 
       for (let code of patchReq.codes) {
         for (let i = 0; i < remain.length; i++) {
           const card = remain[i]
           if (code.toLowerCase() == card.code.toLowerCase()) {
             drawn.push(card)
             remain.splice(i, 1)
-            break
+            if (drawn.length == patchReq.codes.length)
+              break outer
+            else
+              break
           }
         }
       }
@@ -61,9 +64,11 @@ export class GamesService {
       // Select cards from pile
       for (let i = 0; i < game.piles[patchReq.pileName].cards.length; i++) {
         const card = game.piles[patchReq.pileName].cards[i]
-        if (i in patchReq.positions)
+        if (i in patchReq.positions) {
           drawn.push(card)
-        else 
+          if (drawn.length == patchReq.positions.length)
+            break
+        } else 
           remain.push(card)
       }
 
