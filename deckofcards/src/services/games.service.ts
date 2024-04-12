@@ -35,16 +35,19 @@ export class GamesService {
   async drawCard(gameId: string, patchReq: PatchGameDrawCard): Promise<PatchGameDrawCardResponse> {
 
     const game = await this.gamesRepo.getGameById(gameId)
-    if (!(game && (patchReq.pileName in game.piles))) 
-      return { pileName: patchReq.pileName, remaining: 0, drawn: [] }
+    const pileName = patchReq.pileName
+
+    if (!(game && (pileName in game.piles))) 
+      return { pileName, remaining: 0, drawn: [] }
 
     let drawn: Card[] = []
     let remain: Card[] = []
 
     if (patchReq?.codes.length > 0) {
       // Get code from pile
-      remain = [ ...game.piles[patchReq.pileName].cards ]
-outer: 
+      remain = [ ...game.piles[pileName].cards ]
+
+    outer: 
       for (let code of patchReq.codes) {
         for (let i = 0; i < remain.length; i++) {
           const card = remain[i]
@@ -62,8 +65,8 @@ outer:
     } else if (patchReq?.positions.length > 0) {
       // Get cards from location
       // Select cards from pile
-      for (let i = 0; i < game.piles[patchReq.pileName].cards.length; i++) {
-        const card = game.piles[patchReq.pileName].cards[i]
+      for (let i = 0; i < game.piles[pileName].cards.length; i++) {
+        const card = game.piles[pileName].cards[i]
         if (i in patchReq.positions) {
           drawn.push(card)
           if (drawn.length == patchReq.positions.length)
@@ -75,10 +78,10 @@ outer:
     } else {
       // Draw with position
       let selectedIdx: number[] = []
-      let idxs: number[] = Array.from({ length: game.piles[patchReq.pileName].cards.length }, (_, i) => i)
+      let idxs: number[] = Array.from({ length: game.piles[pileName].cards.length }, (_, i) => i)
       switch (patchReq.location) {
         case 'bottom':
-          const start = game.piles[patchReq.pileName].cards.length - patchReq.count
+          const start = game.piles[pileName].cards.length - patchReq.count
           selectedIdx = idxs.slice(start, start + patchReq.count)
           break
         case 'random':
@@ -89,8 +92,8 @@ outer:
       }
 
       // Select cards from pile
-      for (let i = 0; i < game.piles[patchReq.pileName].cards.length; i++) {
-        const card = game.piles[patchReq.pileName].cards[i]
+      for (let i = 0; i < game.piles[pileName].cards.length; i++) {
+        const card = game.piles[pileName].cards[i]
         if (i in selectedIdx)
           drawn.push(card)
         else 
@@ -101,13 +104,16 @@ outer:
     
     // If it is replacement
     if (game.replacement) {
-      remain = game.piles[patchReq.pileName].cards
+      remain = game.piles[pileName].cards
       shuffle(remain)
     }
 
-    // Update discarded
+    // Update game piles
+    const updated = await this.gamesRepo.updatePiles(gameId, pileName, remain, drawn)
+    if (!updated)
+      return Promise.reject(`Cannot update game ${gameId}`)
 
-    return { pileName: patchReq.pileName, remaining: remain.length, drawn }
+    return { pileName, remaining: remain.length, drawn }
   }
 
 }

@@ -1,4 +1,4 @@
-import {Body, Controller, Get, NotFoundException, Param, Patch } from "@nestjs/common";
+import {BadRequestException, Body, Controller, Get, NotFoundException, Param, Patch } from "@nestjs/common";
 import { PatchGameDrawCard} from "common/models/request";
 import {GamesService} from "src/services/games.service";
 
@@ -27,5 +27,8 @@ export class GamesController {
       patchReq = { ...patchReq, ...gameRequest } 
 
     return this.gamesSvc.drawCard(gameId, patchReq)
+        .catch(error => {
+          throw new BadRequestException(error)
+        })
   }
 }
