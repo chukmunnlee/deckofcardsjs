@@ -27,6 +27,24 @@ export class GamesRepository {
     return this.games.countDocuments()
   }
 
+  getPileNamesByGameId(gameId: string): Promise<string[]> {
+    return this.getGameById(gameId)
+        .then(game => !!game? Object.keys(game.piles): [])
+  }
+
+  getPileStatusByGameId(gameId: string) {
+    return this.getGameById(gameId)
+        .then(game => {
+          if (!game)
+            return [];
+          return Object.entries(game.piles)
+            .map(value => ({ 
+              pileName: value[0],
+              remaining: game.piles[value[0]].cards.length 
+            }))
+        })
+  }
+
   updatePiles(gameId: string, pileName: string, remain: Card[], drawn: Card[]) {
     const updatePile = `piles.${pileName}.cards`
     return this.games.updateOne(

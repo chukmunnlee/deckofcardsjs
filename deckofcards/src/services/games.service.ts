@@ -3,7 +3,6 @@ import {Card} from "common/models/deck";
 import {GameStatus} from "common/models/game";
 import {PatchGameDrawCard} from "common/models/request";
 import {PatchGameDrawCardResponse} from "common/models/response";
-import {DecksRepository} from "src/repositories/decks.repository";
 import {GamesRepository} from "src/repositories/games.repository";
 import {shuffle} from "src/utils";
 

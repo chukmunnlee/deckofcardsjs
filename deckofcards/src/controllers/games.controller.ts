@@ -8,7 +8,7 @@ export class GamesController {
   constructor(private readonly gamesSvc: GamesService) { }
 
   @Get('/game/:gameId/status')
-  getGame(@Param('gameId') gameId: string) {
+  getGameStatusByGameId(@Param('gameId') gameId: string) {
     return this.gamesSvc.getGameStatus(gameId)
       .then(game => {
         if (!game)
@@ -18,7 +18,7 @@ export class GamesController {
   }
 
   @Patch('/game/:gameId')
-  patchGame(@Param('gameId') gameId: string, @Body() gameRequest: PatchGameDrawCard) {
+  patchGameByGameId(@Param('gameId') gameId: string, @Body() gameRequest: PatchGameDrawCard) {
     let patchReq: PatchGameDrawCard = {
       count: 1, pileName: 'pile0', location: 'top', positions: [], codes: []
     }

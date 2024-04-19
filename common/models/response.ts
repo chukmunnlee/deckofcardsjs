@@ -15,6 +15,11 @@ export interface PatchGameDrawCardResponse {
   drawn: Card[]
 }
 
+export interface GetPileNamesByGameIdResponse {
+  gameId: string
+  piles: { pileName: string, remaining: number }[]
+}
+
 export interface HealthzResponse {
 	timestamp: number 
 	decks: number

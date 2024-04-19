@@ -17,20 +17,20 @@ export class DecksController {
   }
 
   @Get('/deck/:deckId/cards')
-  getDeckById(@Param('deckId') deckId: string) {
+  getDeckByDeckId(@Param('deckId') deckId: string) {
     return this.decksRepo.findDeckById(deckId, new NotFoundException(`Cannot find deckId = ${deckId}`))
   }
 
   @Get('/deck/:deckId/back')
   @Header('Cache-Control', 'public,max-age=3600')
-  getBackImageById(@Param('deckId') deckId: string) {
+  getBackImageByDeckId(@Param('deckId') deckId: string) {
     return this.decksRepo.getBackImageById(deckId, new NotFoundException(`Cannot find deckId = ${deckId}`))
         .then(backImage => ({ backImage } as DeckBackImageResponse))
   }
 
   @Post('/deck')
   @HttpCode(HttpStatus.CREATED)
-  postDeckById(@Body() payload: PostDeckById) {
+  postDeck(@Body() payload: PostDeckById) {
     return this.deckSvc.createGame(payload)
         .then(game => (
           { gameId: game.gameId, password: game.password } as CreateGameResponse)
