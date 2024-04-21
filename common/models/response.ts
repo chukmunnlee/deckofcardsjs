@@ -9,6 +9,11 @@ export interface CreateGameResponse {
   password: string
 }
 
+export interface GetPilesByGameIdResponse {
+  gameId: string
+  piles: { pileName: string, cards: string[] }[]
+}
+
 export interface PatchGameDrawCardResponse {
   pileName: string
   remaining: number

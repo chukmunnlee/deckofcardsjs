@@ -10,8 +10,6 @@ export interface PostDeckById {
 export interface PatchGameDrawCard {
   // defaults to 1
   count?: number
-  // defaults to pile0
-  pileName?: string
   // default to top, other valid locations: bottom, random
   location?: string
   // draw cards by position, takes precedence over location

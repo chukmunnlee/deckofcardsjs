@@ -1,5 +1,4 @@
-import {BadRequestException, Body, Controller, Get, NotFoundException, Param, Patch } from "@nestjs/common";
-import { PatchGameDrawCard} from "common/models/request";
+import { Controller, Get, NotFoundException, Param } from "@nestjs/common";
 import {GamesService} from "src/services/games.service";
 
 @Controller('/api')
@@ -15,20 +14,5 @@ export class GamesController {
           throw new NotFoundException(`Cannot find game ${gameId}`)
         return game
       })
-  }
-
-  @Patch('/game/:gameId')
-  patchGameByGameId(@Param('gameId') gameId: string, @Body() gameRequest: PatchGameDrawCard) {
-    let patchReq: PatchGameDrawCard = {
-      count: 1, pileName: 'pile0', location: 'top', positions: [], codes: []
-    }
-
-    if (!!gameRequest)
-      patchReq = { ...patchReq, ...gameRequest } 
-
-    return this.gamesSvc.drawCard(gameId, patchReq)
-        .catch(error => {
-          throw new BadRequestException(error)
-        })
   }
 }

@@ -1,5 +1,5 @@
-import { Injectable} from "@nestjs/common";
-import {GetPileNamesByGameIdResponse} from "common/models/response";
+import { HttpException, Injectable} from "@nestjs/common";
+import { GetPilesByGameIdResponse} from "common/models/response";
 import {GamesRepository} from "src/repositories/games.repository";
 
 @Injectable()
@@ -17,4 +17,27 @@ export class PilesService {
     */
   }
 
+  public getPileContentByNameByGameId(gameId: string, pileName: string, password: string
+      , ex: HttpException = undefined) {
+    return this.gamesRepo.getPileContentByNameByGameId(gameId, pileName, password)
+        .then(piles => {
+          if (!!piles) 
+            return piles
+            //return { gameId, piles: _piles } as GetPilesByGameIdResponse
+          if (!ex)
+            return undefined
+          throw ex
+        })
+  }
+
+  public getPilesContentByGameId(gameId: string, password: string, ex: HttpException = undefined) {
+    return this.gamesRepo.getPilesContentByGameId(gameId, password)
+        .then(piles => {
+          if (!!piles)
+            return piles
+          if (!ex)
+            return undefined
+          throw ex
+        })
+  }
 }
