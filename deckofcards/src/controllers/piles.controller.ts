@@ -3,8 +3,7 @@ import { PatchGameDrawCard} from "common/models/request";
 import {GetPileNamesByGameIdResponse, GetPilesByGameIdResponse } from "common/models/response";
 import {GamesService} from "src/services/games.service";
 import {PilesService} from "src/services/piles.service";
-
-import { toBoolean, toString } from 'common/utils'
+import {toBoolean, toString} from "src/utils";
 
 @Controller('/api')
 export class PilesController {
@@ -15,6 +14,7 @@ export class PilesController {
   public getPilesByGameId(@Param('gameId') gameId: string, @Query('full') full = undefined
       , @Headers('X-Game-Password') password: string = undefined) {
 
+    //full = toBoolean(full)
     full = toBoolean(full)
     password = toString(password)
 
@@ -53,6 +53,22 @@ export class PilesController {
             piles: piles.filter(v => pileName === v.pileName)
           } as GetPileNamesByGameIdResponse 
         ))
+  }
+
+  @Patch('/game/:gameId/pile/shuffle')
+  patchGameByGameIdShuffle(@Param('gameId') gameId: string) {
+    return this.patchGameByGameIdPileShuffle(gameId, 'pile0')
+  }
+
+  @Patch('/game/:gameId/pile/:pileName/shuffle')
+  patchGameByGameIdPileShuffle(@Param('gameId') gameId: string, @Param('pileName') pileName: string) {
+    return this.pilesSvc.shufflePile(gameId, pileName
+        , new BadRequestException(`Cannot shuffle ${pileName} pile in game ${gameId}`))
+        .then(result => {
+          if (!result)
+            throw new BadRequestException(`Cannot shuffle ${pileName} pile in game ${gameId}`)
+          return { result }
+        })
   }
 
   // Draw from the main pile

@@ -1,5 +1,5 @@
 import { BadRequestException, Controller, Get, HttpCode, HttpStatus, ServiceUnavailableException } from '@nestjs/common';
-import {HealthzResponse, ReadyResppnse} from 'common/models/response';
+import {HealthzResponse, ReadyResponse} from 'common/models/response';
 import {DecksRepository} from 'src/repositories/decks.repository';
 import {ConfigService} from 'src/services/config.service';
 
@@ -13,7 +13,7 @@ export class ProbesController {
   @HttpCode(HttpStatus.OK)
   ready() {
     if (this.configSvc.ready)
-      return { timestamp: (new Date()).getTime() } as ReadyResppnse
+      return { timestamp: (new Date()).getTime() } as ReadyResponse
 
     throw new ServiceUnavailableException('Service is not ready')
   }

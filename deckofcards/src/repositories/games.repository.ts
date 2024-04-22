@@ -43,7 +43,6 @@ export class GamesRepository {
   getPileContentByNameByGameId (gameId: string, pileName: string, password: string)
       : Promise<{ pileName: string, cards: string[] }[]> {
     const pilePath = `piles.${pileName}`
-        console.info('>>>> in here: ', pilePath)
     // @ts-ignore
     return this.games.aggregate([
       { $match: { _id: gameId, password: password, [pilePath]: { $exists: true } } },
@@ -95,6 +94,14 @@ export class GamesRepository {
 
     return this.games.updateOne({ gameId }, updateOper)
         .then(result => result.modifiedCount > 0)
+  }
+
+  updatePile(gameId: string, pileName: string, cards: Card[]) {
+    return this.games.updateOne({ gameId }, 
+      {
+        $set: { [ `piles.${pileName}.cards` ]: cards }
+      }
+    ).then(result => result.modifiedCount > 0)
   }
 
 }

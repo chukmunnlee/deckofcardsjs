@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Header, HttpCode, HttpStatus, NotFoundException, Param, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Header, HttpCode, HttpStatus, NotFoundException, Param, Post, Query } from '@nestjs/common';
 
 import { DeckSummary } from 'common/models/deck'
 import {PostDeckById} from 'common/models/request';
@@ -17,8 +17,19 @@ export class DecksController {
   }
 
   @Get('/deck/:deckId/cards')
-  getDeckByDeckId(@Param('deckId') deckId: string) {
+  getDeckByDeckId(@Param('deckId') deckId: string, @Query('codes') codes: string = undefined
+      , @Query('codesOnly') codesOnly = undefined) {
+
+    //const simple = toBoolean(codesOnly)
+
     return this.decksRepo.findDeckById(deckId, new NotFoundException(`Cannot find deckId = ${deckId}`))
+      .then(deck => {
+        if (!codes)
+          return deck
+        const values = codes.toLowerCase().split(',')
+        deck.spec.cards = deck.spec.cards.filter(card => values.indexOf(card.code.toLowerCase()) >= 0)
+        return deck
+      })
   }
 
   @Get('/deck/:deckId/back')

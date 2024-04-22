@@ -30,6 +30,6 @@ export interface HealthzResponse {
 	decks: number
 }
 
-export interface ReadyResppnse {
+export interface ReadyResponse {
 	timestamp: number 
 }

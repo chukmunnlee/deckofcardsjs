@@ -6,7 +6,7 @@ export class GamesController {
 
   constructor(private readonly gamesSvc: GamesService) { }
 
-  @Get('/game/:gameId/status')
+  @Get('/game/:gameId')
   getGameStatusByGameId(@Param('gameId') gameId: string) {
     return this.gamesSvc.getGameStatus(gameId)
       .then(game => {

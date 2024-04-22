@@ -1,20 +1,28 @@
 import { HttpException, Injectable} from "@nestjs/common";
-import { GetPilesByGameIdResponse} from "common/models/response";
 import {GamesRepository} from "src/repositories/games.repository";
+import {shuffle} from "src/utils";
 
 @Injectable()
 export class PilesService {
 
   constructor(private readonly gamesRepo: GamesRepository) { }
 
+  public async shufflePile(gameId: string, pileName: string, ex: HttpException = undefined) {
+    const game = await this.gamesRepo.getGameById(gameId)
+    if (!(!!game && (pileName in game.piles))) {
+      if (!ex)
+        return undefined
+      throw ex
+    }
+
+    const cards = game.piles[pileName].cards
+    shuffle(cards)
+
+    return this.gamesRepo.updatePile(gameId, pileName, cards)
+  }
+
   public getPileNamesByGameId(gameId: string) {
     return this.gamesRepo.getPileStatusByGameId(gameId)
-    /*
-    return this.gamesRepo.getPileNamesByGameId(gameId)
-        .then(pileNames => (
-          { gameId, pileNames } as GetPileNamesByGameIdResponse
-        ))
-    */
   }
 
   public getPileContentByNameByGameId(gameId: string, pileName: string, password: string
