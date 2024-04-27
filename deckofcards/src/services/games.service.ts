@@ -31,6 +31,10 @@ export class GamesService {
       })
   }
 
+  deleteGame(gameId: string, password: string): Promise<boolean> {
+    return this.gamesRepo.deleteGameById(gameId, password)
+  }
+
   async drawCard(gameId: string, srcPile: string, dstPile: string
         , patchReq: PatchGameDrawCard): Promise<PatchGameDrawCardResponse> {
 

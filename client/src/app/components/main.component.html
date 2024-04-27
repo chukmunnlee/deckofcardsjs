@@ -1,8 +1,20 @@
-<div class="btn-group btn-group-lg">
-  <button type="button" class="btn btn-success" [routerLink]="['/list-decks']">
-    Create Game
-  </button>
-  <button type="button" class="btn btn-warning">
-    Join Game
-  </button>
+
+<div class="row">
+  <div class="col d-flex justify-content-center align-items-center">
+    <div>
+      <img src="/assets/images/icons/icon-128x128.png" class="w-50">
+    </div>
+    <h1>Deck of Card</h1>
+  </div>
+</div>
+
+<div class="row mt-5 vw-40">
+  <div class="d-flex justify-content-between">
+    <button type="button" class="btn btn-success btn-lg" [routerLink]="['/create-game']">
+      Create Game
+    </button>
+    <button type="button" class="btn btn-warning btn-lg">
+      Join Game
+    </button>
+  </div>
 </div>

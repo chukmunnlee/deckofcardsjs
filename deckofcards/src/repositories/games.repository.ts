@@ -23,6 +23,12 @@ export class GamesRepository {
     return this.games.findOne({ _id: gameId })
   }
 
+  deleteGameById(gameId: string, password: string): Promise<boolean> {
+    // @ts-ignore
+    return this.games.deleteOne({ _id: gameId, password })
+        .then(result => result.deletedCount > 0)
+  }
+
   getPilesContentByGameId(gameId: string, password: string): Promise<{ pileName: string, cards: string[] }[]> {
     // @ts-ignore
     return this.games.aggregate([
