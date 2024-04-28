@@ -1,0 +1,5 @@
+deckofcards/node_modules
+deckofcards/dist
+client/node_modules
+client/dist
+client/.angular

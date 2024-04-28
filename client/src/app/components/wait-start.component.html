@@ -13,7 +13,12 @@
         <div>
           <img [src]="qrCode.image" class="img-thumbnail rounded mb-2">
         </div>
-        <h4> <code>{{ qrCode.url }}</code> </h4>
+        <h4>
+          <code>{{ qrCode.url }}</code>
+          @if (canShare) {
+            <i class="bi bi-share-fill ms-2" (click)="share()"></i>
+          }
+        </h4>
       </div>
     </div>
   </div>

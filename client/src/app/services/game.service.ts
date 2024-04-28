@@ -8,6 +8,14 @@ import {firstValueFrom} from "rxjs";
 export class GameService {
   readonly http = inject(HttpClient)
 
+  share(payload: any) {
+    return navigator.share(payload)
+  }
+
+  canShare() {
+    return !!navigator.share && navigator.canShare({url: 'test'})
+  }
+
   getGameStatusById(gameId: string) {
     return firstValueFrom(
       this.http.get<GameStatus>(`/api/game/${gameId}`)

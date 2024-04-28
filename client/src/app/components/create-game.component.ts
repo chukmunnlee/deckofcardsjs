@@ -52,13 +52,15 @@ export class CreateGameComponent implements OnInit {
 
   createGame() {
     const createGameReq: PostDeckById = this.form.value
+    const idx = this.decks.findIndex(deck => deck.deckId === createGameReq.deckId)
     this.deckSvc.createGame(createGameReq)
       .then(result =>
         Promise.all([ result.password, this.gameSvc.getGameStatusById(result.gameId) ])
       )
       .then(results => {
         this.gameStore.initAdmin({ password: results[0], status: results[1] })
-        this.router.navigate(['/wait-game', results[1].gameId])
+        this.router.navigate(['/wait-game', results[1].gameId]
+            , { queryParams: { name: this.decks[idx].name } })
       })
   }
 
