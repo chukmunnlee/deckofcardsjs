@@ -1,11 +1,27 @@
-import { Controller, Delete, Get, NotFoundException, Param, Headers } from "@nestjs/common";
-import {DeleteGameResponse} from "common/models/response";
+import { Controller, Delete, Get, NotFoundException, Param, Headers, Req } from "@nestjs/common";
+import {Request} from "express";
+
+import * as qr from 'qrcode'
+
+import {DeleteGameResponse, GetGameQRCodeResponse} from "common/models/response";
 import {GamesService} from "src/services/games.service";
 
 @Controller('/api')
 export class GamesController {
 
   constructor(private readonly gamesSvc: GamesService) { }
+
+  @Get('/game/:gameId/qr')
+  getGameQRByGameId(@Param('gameId') gameId: string,
+      @Headers('Host') host: string, @Req() req: Request) {
+
+    const proto = req.secure? 'https': 'http'
+
+    const url = `${proto}://${host}/#/join-game/${gameId}`
+
+    return qr.toDataURL(url)
+        .then(image => ({ url, image } as GetGameQRCodeResponse))
+  }
 
   @Get('/game/:gameId')
   getGameStatusByGameId(@Param('gameId') gameId: string) {

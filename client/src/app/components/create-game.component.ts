@@ -3,10 +3,14 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 import { PostDeckById } from 'common/models/request'
 import {DeckService} from '../services/deck.service';
-import {DeckSummary} from 'common/models/deck';
+import {DeckPresets, DeckSummary} from 'common/models/deck';
 import {Router} from '@angular/router';
 import {GameStore} from '../services/game.store';
 import {GameService} from '../services/game.service';
+
+const PRESET_DEFAULTS: DeckPresets = {
+  count: 1, split: 1, shuffle: true, replacement: false
+}
 
 @Component({
   selector: 'app-list-decks',
@@ -23,10 +27,27 @@ export class CreateGameComponent implements OnInit {
 
   deckSummary$!: Promise<DeckSummary[]>
   form!: FormGroup
+  decks: DeckSummary[] = []
+  description: string = ""
 
   ngOnInit(): void {
     this.deckSummary$ = this.deckSvc.getDecks()
+        .then(decks => {
+          this.decks = decks
+          return decks
+        })
     this.form = this.createForm()
+  }
+
+  onDeckChange(selectCtrl: any) {
+    const deckId = selectCtrl.target.value
+    const idx = this.decks.findIndex(deck => deck.deckId === deckId)
+    const presets: DeckPresets = this.decks[idx].presets
+    this.form.setValue({
+      deckId, ...presets
+    })
+    // @ts-ignore
+    this.description = this.decks[idx]?.description
   }
 
   createGame() {

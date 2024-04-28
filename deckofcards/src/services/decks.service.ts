@@ -12,7 +12,7 @@ import {PostDeckById} from "common/models/request";
 export class DecksService {
 
   constructor(private readonly decksRepo: DecksRepository, private readonly gamesRepo: GamesRepository
-	  , private readonly configSvc: ConfigService) { }
+      , private readonly configSvc: ConfigService) { }
 
   async createGame(form: PostDeckById): Promise<Game> {
 

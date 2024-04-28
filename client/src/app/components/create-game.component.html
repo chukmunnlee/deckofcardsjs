@@ -1,49 +1,56 @@
-<div class="row">
-  <div class="col d-flex justify-content-center">
-    <h1>Create a Game</h1>
+<div class="row mt-5">
+  <div class="col">
+    <div class="d-flex justify-content-center">
+      <h1>Create a Game</h1>
+    </div>
   </div>
 </div>
 
 <div class="row mt-5">
-  <form [formGroup]="form" (submit)="createGame()">
+  <div class="col">
+    <form [formGroup]="form" (submit)="createGame()">
+      <select class="form-select mb-4 form-select-lg" formControlName="deckId"
+            (change)="onDeckChange($event)">
+        <option value="" disabled selected hidden>Select a deck</option>
+        @for (deck of deckSummary$ | async; track $index) {
+          <option [value]="deck.deckId">{{ deck.name }}</option>
+        }
+        @empty {
+          <option>Loading...</option>
+        }
+      </select>
 
-    <select class="form-select mb-4 form-select-lg" formControlName="deckId">
-      @for (deck of deckSummary$ | async; track $index) {
-        <option [value]="deck.deckId">{{ deck.name }}</option>
-      }
-      @empty {
-        <option>Loading...</option>
-      }
-    </select>
+      <p class="fst-italic">{{ description }}</p>
 
-    <div class="mb-4">
-      <label for="count" class="form-label">Decks</label>
-      <input type="number" class="form-control form-control-lg" id="count" formControlName="count">
-    </div>
+      <div class="mb-4">
+        <label for="count" class="form-label">Decks</label>
+        <input type="number" class="form-control form-control-lg" id="count" formControlName="count">
+      </div>
 
-    <div class="mb-4">
-      <label for="split" class="form-label">Split</label>
-      <input type="number" class="form-control form-control-lg" id="split" formControlName="split">
-    </div>
+      <div class="mb-4">
+        <label for="split" class="form-label">Split</label>
+        <input type="number" class="form-control form-control-lg" id="split" formControlName="split">
+      </div>
 
-    <div class="mb-4">
-      <div class="d-flex justify-content-between">
-        <div class="form-check form-switch">
-          <input type="checkbox" class="form-check-input" autocomplete="off" id="shuffle" checked formControlName="shuffle">
-          <label for="shuffle" class="form-check-label">Shuffle</label>
-        </div>
+      <div class="mb-4">
+        <div class="d-flex justify-content-between">
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" autocomplete="off" id="shuffle" checked formControlName="shuffle">
+            <label for="shuffle" class="form-check-label">Shuffle</label>
+          </div>
 
-        <div class="form-check form-switch">
-          <input type="checkbox" class="form-check-input" autocomplete="off" id="replacement" formControlName="replacement">
-          <label for="replacement" class="form-check-label">Replacement</label>
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" autocomplete="off" id="replacement" formControlName="replacement">
+            <label for="replacement" class="form-check-label">Replacement</label>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="d-flex justify-content-between">
-      <button type="button" class="btn btn-lg btn-secondary" [routerLink]="['/']">Back</button>
-      <button type="submit" class="btn btn-lg btn-primary">Create</button>
-    </div>
-  </form>
+      <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-lg btn-secondary" [routerLink]="['/']">Back</button>
+        <button type="submit" class="btn btn-lg btn-primary" [disabled]="form.invalid">Create</button>
+      </div>
+    </form>
+  </div>
 </div>
 

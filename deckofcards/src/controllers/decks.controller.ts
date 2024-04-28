@@ -32,6 +32,11 @@ export class DecksController {
       })
   }
 
+  @Get('/deck/:deckId/presets')
+  getDeckPresetsByDeckId(@Param('deckId') deckId: string) {
+    return this.decksRepo.getDeckPresets(deckId)
+  }
+
   @Get('/deck/:deckId/back')
   @Header('Cache-Control', 'public,max-age=3600')
   getBackImageByDeckId(@Param('deckId') deckId: string) {

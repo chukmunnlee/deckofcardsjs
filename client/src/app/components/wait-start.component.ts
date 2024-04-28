@@ -3,6 +3,7 @@ import {GameStore} from '../services/game.store';
 import {Router} from '@angular/router';
 import {GameService} from '../services/game.service';
 import {firstValueFrom} from 'rxjs';
+import {GetGameQRCodeResponse} from 'common/models/response';
 
 @Component({
   selector: 'app-wait-start',
@@ -18,9 +19,13 @@ export class WaitStartComponent implements OnInit {
   readonly gameStore = inject(GameStore)
   readonly gameSvc = inject(GameService)
 
+  image$!: Promise<GetGameQRCodeResponse>
+
   ngOnInit(): void {
     firstValueFrom(this.gameStore.dump$)
       .then(state => console.info('>>> game state: ', state))
+    this.image$ = this.gameSvc.getGameQRById(this.gameId)
+
   }
 
   back() {

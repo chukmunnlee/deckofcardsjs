@@ -9,6 +9,11 @@ export interface CreateGameResponse {
   password: string
 }
 
+export interface GetGameQRCodeResponse {
+  url: string
+  image: string
+}
+
 export interface DeleteGameResponse {
   gameId: string
 }

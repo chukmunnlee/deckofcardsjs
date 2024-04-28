@@ -4,3 +4,7 @@
 .vw-40 {
   width: 40vw;
 }
+
+.mt-10 {
+  margin-top: 10vh !important;
+}

@@ -6,6 +6,10 @@ metadata:
   description: Mahjong with Hong Kong tiles
 spec:
   backImage: https://acme.sgp1.digitaloceanspaces.com/mahjong/back.png
+  presets:
+    count: 1
+    split: 4
+    shuffle: true
   cards:
     # Bamboo
   - code: BM01

@@ -1,6 +1,6 @@
 import {HttpException, Injectable} from "@nestjs/common";
 import {Collection, MongoClient} from "mongodb";
-import { Deck, DeckSummary} from "common/models/deck";
+import { Deck, DeckPresets, DeckSummary} from "common/models/deck";
 
 @Injectable()
 export class DecksRepository {
@@ -24,15 +24,27 @@ export class DecksRepository {
     return this.decks.countDocuments()
   }
 
+  getDeckPresets(deckId: string, ex: HttpException = null): Promise<DeckPresets> {
+    return this.decks.findOne({ "metadata.id": deckId })
+      .then(result => {
+        if (!result) {
+          if (!!ex) throw ex
+          return null
+        }
+        return result['spec']['presets'] as DeckPresets
+      })
+  }
+
   getDecksSummary(): Promise<DeckSummary[]> {
     return this.decks.find({})
-      .project({ 'metadata.name': 1, 'metadata.description': 1 })
+      .project({ 'metadata.name': 1, 'metadata.description': 1 , 'spec.presets': 1 })
       .toArray()
       .then(results => 
         results.map(d => ({
           deckId: d['_id'],
           name: d['metadata']['name'],
-          description: d['metadata']['description']
+          description: d['metadata']['description'],
+          presets: d['spec']['presets']
         } as DeckSummary))
       )
   }
@@ -40,7 +52,7 @@ export class DecksRepository {
   findDeckById(deckId: string, ex: HttpException = null): Promise<Deck | null> {
     return this.decks.findOne<Deck>({ _id: deckId })
       .then(result => {
-        if (null == result) {
+        if (!result) {
           if (!!ex) throw ex
           return null
         }
