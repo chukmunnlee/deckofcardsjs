@@ -1,10 +1,12 @@
 {
+  "manifest_version": 2,
+  "version": "0.0.1",
   "name": "The Card Game",
   "short_name": "Cards",
   "theme_color": "#fff",
   "background_color": "#fff",
   "display": "standalone",
-  "orientation": "landscape",
+  "orientation": "portrait",
   "scope": "/",
   "start_url": "/",
   "id": "/",
