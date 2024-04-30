@@ -19,6 +19,7 @@ const appRoutes: Routes = [
   { path: 'create-game', component: CreateGameComponent },
   { path: 'wait-game/:gameId', component: WaitStartComponent },
   { path: 'join-game/:gameId', component: JoinGameComponent },
+  { path: 'join-game', component: JoinGameComponent },
   { path: '**', redirectTo: '/', pathMatch: 'full' }
 ]
 

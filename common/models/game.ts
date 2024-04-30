@@ -6,11 +6,12 @@ export interface Game {
   piles: { [ key: string ]: Pile }
   count: number
   split: number
-  shuffle: boolean, 
-  replacement: boolean,
+  shuffle: boolean
+  replacement: boolean
   createdOn: number
   lastUpdate: number
   password: string
+  started: boolean
 }
 
 export interface Pile {

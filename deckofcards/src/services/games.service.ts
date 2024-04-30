@@ -1,4 +1,4 @@
-import { Injectable} from "@nestjs/common";
+import { Injectable, NotFoundException} from "@nestjs/common";
 import {Card} from "common/models/deck";
 import {GameStatus} from "common/models/game";
 import {PatchGameDrawCard} from "common/models/request";
@@ -29,6 +29,11 @@ export class GamesService {
           gameStatus.piles[p] = game.piles[p].cards.length
         return gameStatus
       })
+  }
+
+  getDeckDescriptionFromId(gameId: string) {
+    return this.gamesRepo.getDeckDescriptionFromId(gameId
+        , new NotFoundException(`Cannot find gameId ${gameId}`))
   }
 
   deleteGame(gameId: string, password: string): Promise<boolean> {

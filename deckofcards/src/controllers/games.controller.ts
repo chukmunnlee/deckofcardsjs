@@ -17,10 +17,12 @@ export class GamesController {
 
     const proto = req.secure? 'https': 'http'
 
-    const url = `${proto}://${host}/#/join-game/${gameId}`
-
-    return qr.toDataURL(url)
-        .then(image => ({ url, image } as GetGameQRCodeResponse))
+    return this.gamesSvc.getDeckDescriptionFromId(gameId)
+        .then(result => {
+          const url = `${proto}://${host}/#/join-game/${gameId}?name=${result.name}`
+          return qr.toDataURL(url)
+              .then(image => ({ url, image } as GetGameQRCodeResponse))
+        })
   }
 
   @Get('/game/:gameId')

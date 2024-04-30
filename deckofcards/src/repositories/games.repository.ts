@@ -2,7 +2,7 @@ import {HttpException, Injectable} from "@nestjs/common";
 
 import {Collection, MongoClient} from "mongodb";
 import {Game} from "common/models/game";
-import {Card} from "common/models/deck";
+import {Card, GetDeckDescriptionByGameId} from "common/models/deck";
 
 @Injectable()
 export class GamesRepository {
@@ -27,6 +27,34 @@ export class GamesRepository {
     // @ts-ignore
     return this.games.deleteOne({ _id: gameId, password })
         .then(result => result.deletedCount > 0)
+  }
+
+  getDeckDescriptionFromId(gameId: string, ex: HttpException = null) {
+    return this.games.aggregate([
+      { $match: { gameId } },
+      { $lookup: {
+          "from": 'decks', 
+          foreignField: '_id', 
+          localField: 'deckId',
+          'as': 'deck'
+        }
+      },
+      {
+        $project: {
+          _id: 0, gameId: "$gameId", deckId: "$deckId",
+          name: { $first: "$deck.metadata.name" },
+          description: { $first: "$deck.metadata.description" },
+        }
+      }
+    ]).toArray()
+    .then(result => {
+      if (!result.length) {
+        if (!!ex)
+          throw ex
+        return undefined
+      }
+      return result[0] as GetDeckDescriptionByGameId
+    })
   }
 
   getPilesContentByGameId(gameId: string, password: string): Promise<{ pileName: string, cards: string[] }[]> {

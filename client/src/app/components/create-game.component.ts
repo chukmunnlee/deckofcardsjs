@@ -44,7 +44,8 @@ export class CreateGameComponent implements OnInit {
     const idx = this.decks.findIndex(deck => deck.deckId === deckId)
     const presets: DeckPresets = this.decks[idx].presets
     this.form.setValue({
-      deckId, ...presets
+      deckId, count: 1, split: 1, shuffle: true, replacement: false,
+      ...presets
     })
     // @ts-ignore
     this.description = this.decks[idx]?.description

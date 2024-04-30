@@ -67,7 +67,8 @@ export class DecksService {
       count: options.count,
       split: options.split,
       shuffle: options.shuffle,
-      replacement: options.replacement
+      replacement: options.replacement,
+      started: false
     }
 
     return this.gamesRepo.createGame(game).then(() => game)

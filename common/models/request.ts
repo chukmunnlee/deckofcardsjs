@@ -7,6 +7,11 @@ export interface PostDeckById {
   name?: string
 }
 
+export interface PostJoinGame {
+	gameId: string
+	name: string
+}
+
 export interface PatchGameDrawCard {
   // defaults to 1
   count?: number

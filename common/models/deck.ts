@@ -33,3 +33,10 @@ export interface DeckSummary {
   description?: string
   presets: DeckPresets
 }
+
+export interface GetDeckDescriptionByGameId {
+  gameId: string
+  deckId: string
+  name: string
+  description: string
+}

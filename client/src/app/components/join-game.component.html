@@ -1,8 +1,42 @@
 <div class="row">
-  <div class="col d-flex justify-content-center">
-    <h1>Create a Game</h1>
+  <div class="col">
+    <div class="d-flex justify-content-center">
+      <h1> Join Game <code>{{ gameId }}</code> </h1>
+    </div>
   </div>
 </div>
 
+@if (!!name) {
+  <div class="row mt-1">
+    <div class="col">
+      <div class="d-flex justify-content-center">
+        <h3> You are joining {{ name }} </h3>
+      </div>
+    </div>
+  </div>
+}
+
 <div class="row mt-5">
+  <div class="row">
+    <form [formGroup]="form" (submit)="process()">
+
+      @if (!gameId) {
+        <div class="mb-4">
+          <label for="gameId" class="form-label">GameId</label>
+          <input type="text" class="form-control form-control-lg" id="name" formControlName="gameId">
+        </div>
+      }
+
+      <div class="mb-4">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control form-control-lg" id="name" formControlName="name">
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-lg btn-secondary" [routerLink]="['/']">Back</button>
+        <button type="submit" class="btn btn-lg btn-primary" [disabled]="form.invalid">Join</button>
+      </div>
+
+    </form>
+  </div>
 </div>

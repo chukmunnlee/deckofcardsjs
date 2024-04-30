@@ -23,6 +23,7 @@ export class WaitStartComponent implements OnInit {
   image$!: Promise<GetGameQRCodeResponse>
   qr!: GetGameQRCodeResponse
   canShare = false
+  name = ''
 
   ngOnInit(): void {
     firstValueFrom(this.gameStore.dump$)
@@ -33,6 +34,7 @@ export class WaitStartComponent implements OnInit {
           return qr
         })
     this.canShare = this.gameSvc.canShare()
+    this.name = this.activatedRoute.snapshot.queryParams['name'] || 'NO SET'
   }
 
   share() {
