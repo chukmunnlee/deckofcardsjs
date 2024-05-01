@@ -26,12 +26,22 @@ export class GamesRepository {
   }
 
   removePlayerFromGame(gameId: string, player: Player): Promise<boolean> {
-    console.info('>>>> player: ', player)
     return this.games.updateOne(
       { gameId }, 
       {
         $pull: {
           players: { name: player.name, password: player.password }
+        }
+      }
+    ).then(result => result.modifiedCount > 0)
+  }
+
+  removePlayerFromGameByAdmin(gameId: string, player: Player): Promise<boolean> {
+    return this.games.updateOne(
+      { gameId, password: player.password }, 
+      {
+        $pull: {
+          players: { name: player.name }
         }
       }
     ).then(result => result.modifiedCount > 0)

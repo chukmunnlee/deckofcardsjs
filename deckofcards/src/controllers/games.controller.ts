@@ -19,10 +19,15 @@ export class GamesController {
 
   @Delete('/game/:gameId/player')
   deleteGamePlayerByGameId(@Param('gameId') gameId: string
-      , @Query() player: Player , @Headers('X-Game-Password') password: string = 'abc') {
-    console.info('>>> player: ', player)
+      , @Query() player: Player, @Query('admin') admin = false,  @Headers('X-Game-Password') password: string = 'abc') {
+    if (admin)
+      return this.gamesSvc.removePlayer(gameId, { name: player.name, password })
+          .then(_ => (
+            { gameId, name: player.name } as LeaveGameResponse
+          ))
+
     return this.gamesSvc.leaveGame(gameId, { name: player.name, password })
-        .then(result => (
+        .then(_ => (
           { gameId, name: player.name } as LeaveGameResponse
         ))
   }

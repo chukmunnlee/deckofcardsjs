@@ -20,7 +20,8 @@ export class GamesService {
     if (game.started)
       throw `Game ${gameId} has started. Cannnot join`
 
-    if (game.players.findIndex(p => name == p.name) != -1)
+    const normName = this.normalize(name)
+    if (game.players.findIndex(p => normName == this.normalize(p.name)) != -1)
       throw new BadRequestException(`Name ${name} has been taken`)
 
     const password = uuidv4().substring(0, 8)
@@ -33,12 +34,18 @@ export class GamesService {
         })
   }
 
+  normalize(text: string): string {
+	  return text.trim().toLowerCase()
+  }
+
   leaveGame(gameId: string, player: Player) {
     return this.gamesRepo.removePlayerFromGame(gameId, player)
-        .then(result => {
-          console.info('>>> leave game result: ', result)
-          return result
-        })
+        .then(result => result)
+  }
+
+  removePlayer(gameId: string, player: Player) {
+    return this.gamesRepo.removePlayerFromGameByAdmin(gameId, player)
+        .then(result => result)
   }
 
   getPlayersByGameId(gameId: string) {
