@@ -1,7 +1,7 @@
 import {HttpException, Injectable} from "@nestjs/common";
 
 import {Collection, MongoClient} from "mongodb";
-import {Game} from "common/models/game";
+import {Game, Player} from "common/models/game";
 import {Card, GetDeckDescriptionByGameId} from "common/models/deck";
 
 @Injectable()
@@ -16,6 +16,37 @@ export class GamesRepository {
   createGame(game: Game, ex: HttpException = null) {
     // @ts-ignore
     return this.games.insertOne({ _id: game.gameId, ...game })
+  }
+
+  addPlayerToGame(gameId: string, player: Player): Promise<boolean> {
+    return this.games.updateOne(
+      { gameId },
+      { $push: { players: player } }
+    ).then(result => result.modifiedCount == 1)
+  }
+
+  removePlayerFromGame(gameId: string, player: Player): Promise<boolean> {
+    console.info('>>>> player: ', player)
+    return this.games.updateOne(
+      { gameId }, 
+      {
+        $pull: {
+          players: { name: player.name, password: player.password }
+        }
+      }
+    ).then(result => result.modifiedCount > 0)
+  }
+
+  getPlayersByGameId(gameId: string) {
+    // @ts-ignore
+    return this.games.find<Game[]>({ _id: gameId })
+        .project({ _id: 0, "players.name": 1 })
+        .toArray()
+        .then(results => {
+          if (!results.length)
+            return []
+          return results[0]
+        })
   }
 
   getGameById(gameId: string): Promise<Game> {

@@ -1,4 +1,5 @@
 import {Card} from "./deck"
+import {Player} from "./game"
 
 export interface DeckBackImageResponse {
   backImage: string
@@ -7,6 +8,22 @@ export interface DeckBackImageResponse {
 export interface CreateGameResponse {
   gameId: string 
   password: string
+}
+
+export interface JoinGameResponse {
+  gameId: string
+  name: string
+  password: string
+}
+
+export interface LeaveGameResponse {
+  gameId: string
+  name: string
+}
+
+export interface GetPlayersInGame {
+  gameId: string
+  players: Player[]
 }
 
 export interface GetGameQRCodeResponse {

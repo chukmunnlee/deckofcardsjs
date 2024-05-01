@@ -4,29 +4,27 @@ import {ComponentStore} from "@ngrx/component-store"
 import { GameStatus } from 'common/models/game'
 
 export interface GameState {
-  role: string
-  status: GameStatus
-  admin: AdminState
-}
-
-export interface AdminState {
-  password: string
-}
-
-interface InitAdminValue {
+  role: string // admin or player
+  name?: string
   password: string
   status: GameStatus
+}
+
+export interface InitGameState {
+  name?: string
+  password: string
 }
 
 const INIT_STATE: GameState = {
   role: "",
+  name: "",
+  password: "",
   status: {
     gameId: "", deckId: "",
     count: -1, split: -1,
     shuffle: false, replacement: false,
     piles: { },
-  },
-  admin: { password: "" }
+  }
 }
 
 @Injectable()
@@ -38,13 +36,37 @@ export class GameStore extends ComponentStore<GameState> {
     (_: GameState) => (INIT_STATE)
   )
 
-  readonly initAdmin = this.updater<InitAdminValue>(
-    (_: GameState, value: InitAdminValue) => {
+  readonly initAdmin = this.updater<InitGameState>(
+    (state: GameState, value: InitGameState) => {
       return {
         role: 'admin',
-        status: value.status,
-        admin: { password: value.password }
+        password: value.password,
+        status: state.status,
       } as GameState
+    }
+  )
+
+  readonly initPlayer = this.updater<InitGameState>(
+    (state: GameState, value: InitGameState) => {
+      return {
+        role: 'player',
+        name: value.name,
+        password: value.password,
+        status: state.status,
+      } as GameState
+    }
+  )
+
+  readonly updateStatus = this.updater<GameStatus>(
+    (state: GameState, status: GameStatus) => {
+      return { ...state, status }
+    }
+  )
+
+  // Use with caution, only for players in waiting state
+  readonly setGameId = this.updater<string>(
+    (state: GameState, gameId: string) => {
+      return { ...state, status: { ...state.status, gameId }  }
     }
   )
 
@@ -57,8 +79,12 @@ export class GameStore extends ComponentStore<GameState> {
     (store: GameState) => store.status.deckId
   )
 
+  readonly name$ = this.select<string>(
+    (store: GameState) => !!store.name? store.name: ''
+  )
+
   readonly password$ = this.select<string>(
-    (store: GameState) => !!store.admin? store.admin.password: ''
+    (store: GameState) => store.password
   )
 
   readonly isAdmin$ = this.select<boolean>(

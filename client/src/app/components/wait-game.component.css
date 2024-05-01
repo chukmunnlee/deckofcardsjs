@@ -1,0 +1,10 @@
+.name-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr;
+}
+
+#clipboard:active {
+  box-shadow: 0px 0px 3px 3px lightblue;
+  color: blue;
+}

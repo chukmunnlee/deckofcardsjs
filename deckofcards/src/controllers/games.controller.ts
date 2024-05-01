@@ -1,15 +1,36 @@
-import { Controller, Delete, Get, NotFoundException, Param, Headers, Req } from "@nestjs/common";
+import { Controller, Delete, Get, NotFoundException, Param, Headers, Req, Post, Body, BadRequestException, Query } from "@nestjs/common";
 import {Request} from "express";
 
 import * as qr from 'qrcode'
 
-import {DeleteGameResponse, GetGameQRCodeResponse} from "common/models/response";
+import {DeleteGameResponse, GetGameQRCodeResponse, LeaveGameResponse} from "common/models/response";
 import {GamesService} from "src/services/games.service";
+import {Player} from "common/models/game";
 
 @Controller('/api')
 export class GamesController {
 
   constructor(private readonly gamesSvc: GamesService) { }
+
+  @Post('/game/:gameId/player')
+  postGamePlayerByGameId(@Param('gameId') gameId: string, @Body() player: Player) {
+    return this.gamesSvc.joinGame(gameId, player.name)
+  }
+
+  @Delete('/game/:gameId/player')
+  deleteGamePlayerByGameId(@Param('gameId') gameId: string
+      , @Query() player: Player , @Headers('X-Game-Password') password: string = 'abc') {
+    console.info('>>> player: ', player)
+    return this.gamesSvc.leaveGame(gameId, { name: player.name, password })
+        .then(result => (
+          { gameId, name: player.name } as LeaveGameResponse
+        ))
+  }
+
+  @Get('/game/:gameId/players')
+  getPlayersByGameId(@Param('gameId') gameId: string) {
+    return this.gamesSvc.getPlayersByGameId(gameId)
+  }
 
   @Get('/game/:gameId/qr')
   getGameQRByGameId(@Param('gameId') gameId: string,

@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {GameService} from '../services/game.service';
+import {GameStore} from '../services/game.store';
 
 @Component({
   selector: 'app-join-game',
@@ -9,13 +11,17 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class JoinGameComponent implements OnInit {
 
+  readonly router = inject(Router)
   readonly activatedRoute = inject(ActivatedRoute)
   readonly fb = inject(FormBuilder)
+  readonly gameSvc = inject(GameService)
+  readonly gameStore = inject(GameStore)
 
   @Input()
   gameId = ''
 
   name = ''
+  errorText = ''
 
   form!: FormGroup
 
@@ -27,7 +33,20 @@ export class JoinGameComponent implements OnInit {
 
   process() {
     const details = { gameId: this.gameId, ...this.form.value }
-    console.info('>>> details: ', details)
+    this.gameSvc.joinGameById(details.gameId, details.name)
+      .then(result => {
+        this.gameStore.initPlayer({ name: details.name, password: result.password })
+        this.gameStore.setGameId(details.gameId)
+        // TODO navigate to player-waiting page
+        const queryParams: any = {}
+        if (!!this.name)
+          queryParams['name'] = this.name
+
+        this.router.navigate(['/wait-start', details.gameId ], { queryParams })
+      })
+      .catch(error => {
+        this.errorText = error.error.message
+      })
   }
 
   private createForm(gameId: string = ''): FormGroup {

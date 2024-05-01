@@ -12,11 +12,17 @@ export interface Game {
   lastUpdate: number
   password: string
   started: boolean
+  players: Player[]
 }
 
 export interface Pile {
   name: string
   cards: Card[]
+}
+
+export interface Player {
+  name: string
+  password?: string
 }
 
 export interface GameStatus {

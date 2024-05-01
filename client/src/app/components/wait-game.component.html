@@ -1,0 +1,76 @@
+<div class="row mt-5">
+  <div class="col">
+    <div class="d-flex justify-content-center">
+      <h1>
+        Game Id: <code>{{ gameId }}</code>
+        <i id="clipboard" class="bi bi-clipboard ms-2 fs-6" (click)="copyToClipBoard()"></i>
+      </h1>
+    </div>
+  </div>
+</div>
+<div class="row mt-1">
+  <div class="col">
+    <div class="d-flex justify-content-center">
+      <h1> Name: {{ name }} </h1>
+    </div>
+  </div>
+</div>
+
+@if (image$ | async; as qrCode) {
+  <div class="row mt-3">
+    <div class="col">
+      <div class="d-flex flex-column align-items-center justify-content-center">
+        <div>
+          <img [src]="qrCode.image" class="img-thumbnail rounded mb-2">
+        </div>
+        <h4>
+          <code>{{ qrCode.url }}</code>
+          @if (canShare) {
+            <i class="bi bi-share-fill ms-2" (click)="share()"></i>
+          }
+        </h4>
+      </div>
+    </div>
+  </div>
+}
+
+<div class="row mt-3">
+  <div class="col">
+    @if (players$ | async; as players) {
+      <div class="name-list">
+        @for (p of players; track $index) {
+          <div>
+            <span class="text-light-emphasis fw-semibold fs-4">{{ p.name | titlecase }}</span>
+            <i class="bi bi-x-lg ms-2" (click)="removePlayer(p.name)"></i>
+          </div>
+        }
+      </div>
+    } @else {
+      <h3 class="text-danger-emphasis">No players yet</h3>
+    }
+
+  </div>
+</div>
+
+
+<div class="row mt-5">
+  <div class="col">
+    <div class="d-flex justify-content-around">
+      <button type="button" class="btn btn-secondary btn-lg" (click)="back()">
+        Back
+      </button>
+      <button type="button" class="btn btn-success btn-lg" (click)="back()">
+        Start
+      </button>
+      <button type="button" class="btn btn-primary btn-lg" (click)="refresh()">
+        Refresh
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="row">
+    <app-error-message [text]="errorText"></app-error-message>
+  </div>
+</div>

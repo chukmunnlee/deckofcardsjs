@@ -30,6 +30,8 @@ export class CreateGameComponent implements OnInit {
   decks: DeckSummary[] = []
   description: string = ""
 
+  errorText = ""
+
   ngOnInit(): void {
     this.deckSummary$ = this.deckSvc.getDecks()
         .then(decks => {
@@ -59,9 +61,13 @@ export class CreateGameComponent implements OnInit {
         Promise.all([ result.password, this.gameSvc.getGameStatusById(result.gameId) ])
       )
       .then(results => {
-        this.gameStore.initAdmin({ password: results[0], status: results[1] })
+        this.gameStore.initAdmin({ password: results[0] })
+        this.gameStore.updateStatus(results[1])
         this.router.navigate(['/wait-game', results[1].gameId]
             , { queryParams: { name: this.decks[idx].name } })
+      })
+      .catch(error => {
+        this.errorText = error.error.message
       })
   }
 

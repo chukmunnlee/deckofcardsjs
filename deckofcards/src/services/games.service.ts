@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException} from "@nestjs/common";
+import { v4 as uuidv4 } from 'uuid'
+import { BadRequestException, Injectable, NotFoundException} from "@nestjs/common";
 import {Card} from "common/models/deck";
-import {GameStatus} from "common/models/game";
+import {GameStatus, Player} from "common/models/game";
 import {PatchGameDrawCard} from "common/models/request";
-import {PatchGameDrawCardResponse} from "common/models/response";
+import {GetPlayersInGame, JoinGameResponse, PatchGameDrawCardResponse} from "common/models/response";
 import {GamesRepository} from "src/repositories/games.repository";
 import {shuffle} from "src/utils";
 
@@ -10,6 +11,42 @@ import {shuffle} from "src/utils";
 export class GamesService {
 
   constructor(private readonly gamesRepo: GamesRepository) { }
+
+  async joinGame(gameId: string, name: string) {
+    const game = await this.gamesRepo.getGameById(gameId)
+    if (!game)
+      throw new BadRequestException(`Cannot find game ${gameId}`)
+
+    if (game.started)
+      throw `Game ${gameId} has started. Cannnot join`
+
+    if (game.players.findIndex(p => name == p.name) != -1)
+      throw new BadRequestException(`Name ${name} has been taken`)
+
+    const password = uuidv4().substring(0, 8)
+
+    return this.gamesRepo.addPlayerToGame(gameId, { name, password })
+        .then(result => {
+          if (!result)
+            throw new BadRequestException(`Strange. Cannot add player ${name} to game ${gameId}`)
+          return { gameId, name, password } as JoinGameResponse
+        })
+  }
+
+  leaveGame(gameId: string, player: Player) {
+    return this.gamesRepo.removePlayerFromGame(gameId, player)
+        .then(result => {
+          console.info('>>> leave game result: ', result)
+          return result
+        })
+  }
+
+  getPlayersByGameId(gameId: string) {
+    return this.gamesRepo.getPlayersByGameId(gameId)
+        .then(result => (
+          { gameId, ...result } as GetPlayersInGame
+        ))
+  }
 
   getGameStatus(gameId: string) {
     return this.gamesRepo.getGameById(gameId)
