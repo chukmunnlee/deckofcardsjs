@@ -6,7 +6,7 @@ import {CreateGameResponse, DeckBackImageResponse} from 'common/models/response'
 import {DecksRepository} from 'src/repositories/decks.repository';
 import {DecksService} from 'src/services/decks.service';
 
-@Controller('/api')
+@Controller()
 export class DecksController {
 
   constructor(private readonly decksRepo: DecksRepository, private readonly deckSvc: DecksService) { }

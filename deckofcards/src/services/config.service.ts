@@ -7,8 +7,8 @@ import { hideBin } from 'yargs/helpers'
 import {loadDecks, createDatabaseConnection } from '../utils';
 import {GamesRepository} from "src/repositories/games.repository";
 
-const USAGE = `Usage: $0 --cors --port [num] --games [num] 
-    --decksDir [directory] --staticDir [directory]
+const USAGE = `Usage: $0 --cors --port [number] --games [number] 
+    --decksDir [directory] --staticDir [directory] --prefix [resource prefix]
     --drop --mongodbUri [string]`
 
 @Injectable()
@@ -28,6 +28,7 @@ export class ConfigService implements OnModuleInit {
 		.default('games', parseInt(process.env.GAMES) || 10)
 		.default('decksDir', process.env.DECKS_DIR || '')
 		.default('staticDir', process.env.STATIC_DIR || 'static')
+		.default('prefix', process.env.PREFIX || '/api')
 		.default('drop', !!process.env.DROP)
 		.default('mongodbUri', process.env.MONGODB_URI || 'mongodb://localhost:27017/deckofcards')
 		.parse()
@@ -37,6 +38,7 @@ export class ConfigService implements OnModuleInit {
   get loadDecks() { return !!this.argv.decksDir }
   get decksDir() { return this.argv.decksDir }
   get staticDir() { return this.argv.staticDir }
+  get prefix() { return this.argv.prefix }
   get drop() { return this.argv.drop }
   get enableCors() { return this.argv.cors }
   get port() { return this.argv.port }

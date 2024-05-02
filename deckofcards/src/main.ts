@@ -18,6 +18,10 @@ async function bootstrap() {
   app.disable('x-powered-by')
   app.use(morgan('combined'))
 
+  app.setGlobalPrefix(configSvc.prefix, {
+    exclude: [ 'healthz', 'ready' ]
+  })
+
   app.listen(PORT, () => {
     console.info(`Application started on port ${PORT} at ${new Date()}`)
     if (configSvc.enableCors)

@@ -7,7 +7,7 @@ import {DeleteGameResponse, GetGameQRCodeResponse, LeaveGameResponse} from "comm
 import {GamesService} from "src/services/games.service";
 import {Player} from "common/models/game";
 
-@Controller('/api')
+@Controller()
 export class GamesController {
 
   constructor(private readonly gamesSvc: GamesService) { }

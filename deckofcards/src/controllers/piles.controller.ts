@@ -5,7 +5,7 @@ import {GamesService} from "src/services/games.service";
 import {PilesService} from "src/services/piles.service";
 import {toBoolean, toString} from "src/utils";
 
-@Controller('/api')
+@Controller()
 export class PilesController {
 
   constructor(private readonly pilesSvc: PilesService, private readonly gamesSvc: GamesService) { }
@@ -14,7 +14,6 @@ export class PilesController {
   public getPilesByGameId(@Param('gameId') gameId: string, @Query('full') full = undefined
       , @Headers('X-Game-Password') password: string = undefined) {
 
-    //full = toBoolean(full)
     full = toBoolean(full)
     password = toString(password)
 
