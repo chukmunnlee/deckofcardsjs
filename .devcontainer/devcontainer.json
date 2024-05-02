@@ -1,0 +1,22 @@
+{
+	"build": {
+		"dockerfile": "./Dockerfile",
+		"context": "."
+	},
+
+	"forwardPorts": [ 3000, 4200 ],
+	"remoteUser": "node",
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"Angular.ng-template"
+			]
+		}
+	},
+
+	"postAttachCommand": {
+		"angular": "cd client && npm i",
+		"nestjs": "cd deckofcards && npm i --force"
+	}
+}
