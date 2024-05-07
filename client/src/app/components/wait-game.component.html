@@ -40,9 +40,11 @@
       <div class="name-list">
         @for (p of players; track $index) {
           <div>
-            <span class="text-light-emphasis fw-semibold fs-4">{{ p.name | titlecase }}</span>
-            <i class="bi bi-x-lg ms-2" (click)="removePlayer(p.name)"></i>
+            <span class="text-light-emphasis fw-semibold fs-4">{{ p | titlecase }}</span>
+            <i class="bi bi-x-lg ms-2" (click)="removePlayer(p)"></i>
           </div>
+        } @empty {
+          <h3 class="text-danger-emphasis">No players yet</h3>
         }
       </div>
     } @else {
@@ -59,7 +61,8 @@
       <button type="button" class="btn btn-secondary btn-lg" (click)="back()">
         Back
       </button>
-      <button type="button" class="btn btn-success btn-lg" (click)="back()">
+      <button type="button" class="btn btn-success btn-lg" (click)="start()"
+            [disabled]="canStart()">
         Start
       </button>
       <button type="button" class="btn btn-primary btn-lg" (click)="refresh()">

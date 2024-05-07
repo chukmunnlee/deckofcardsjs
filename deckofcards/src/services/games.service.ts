@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { BadRequestException, Injectable, NotFoundException} from "@nestjs/common";
+import { BadRequestException, HttpException, Injectable, NotFoundException} from "@nestjs/common";
 import {Card} from "common/models/deck";
 import {GameStatus, Player} from "common/models/game";
 import {PatchGameDrawCard} from "common/models/request";
@@ -35,7 +35,18 @@ export class GamesService {
   }
 
   normalize(text: string): string {
-	  return text.trim().toLowerCase()
+   return text.trim().toLowerCase()
+  }
+
+  startGame(gameId: string, password: string, ex: HttpException = null) {
+    this.gamesRepo.startGame(gameId, password)
+        .then(result => {
+          if (result)
+            return result
+          else if (!!ex)
+            throw ex
+          return false
+        })
   }
 
   leaveGame(gameId: string, player: Player) {

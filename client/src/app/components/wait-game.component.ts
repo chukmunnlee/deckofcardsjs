@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angula
 import {GameStore} from '../services/game.store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameService} from '../services/game.service';
-import {Observable, firstValueFrom} from 'rxjs';
+import {Observable, firstValueFrom, tap} from 'rxjs';
 import {GetGameQRCodeResponse} from 'common/models/response';
 import {Player} from 'common/models/game';
 
@@ -26,7 +26,10 @@ export class WaitGameComponent implements OnInit {
   name = ''
   errorText = ''
   image$!: Promise<GetGameQRCodeResponse>
-  players$!: Observable<Player[] | undefined>
+  //players$!: Observable<Player[] | undefined>
+  players$!: Observable<string[]>
+
+  private _cannotStart = true
 
   ngOnInit(): void {
     firstValueFrom(this.gameStore.dump$)
@@ -35,6 +38,7 @@ export class WaitGameComponent implements OnInit {
           this.qr = qr
           return qr
         })
+    this.players$ = this.gameStore.players$
     this.canShare = this.gameSvc.canShare()
     this.name = this.activatedRoute.snapshot.queryParams['name'] || 'NO SET'
   }
@@ -53,13 +57,25 @@ export class WaitGameComponent implements OnInit {
   removePlayer(name: string) {
     firstValueFrom(this.gameStore.password$)
       .then(password => this.gameSvc.removePlayerFromGame(this.gameId, name, password))
-      .then(() => this.refresh())
+      .then(() => {
+        this.gameStore.removePlayer(name)
+        return firstValueFrom(this.gameStore.players$)
+      })
+      .then(players => this._cannotStart = players.length <= 0)
   }
 
   refresh() {
-    this.players$ = this.gameSvc.getPlayersInGame(this.gameId)
+    firstValueFrom(this.gameSvc.getPlayersInGame(this.gameId))
+        .then(players => {
+          this._cannotStart = !players
+          this.gameStore.updatePlayers(!players? []: players.map(p => p.name))
+        })
   }
-
+  canStart() {
+    return this._cannotStart
+  }
+  start() {
+  }
   back() {
     firstValueFrom(this.gameStore.password$)
       .then(password => this.gameSvc.deleteGameById(this.gameId, password))

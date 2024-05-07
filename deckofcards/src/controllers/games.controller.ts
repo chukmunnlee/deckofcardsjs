@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, NotFoundException, Param, Headers, Req, Post, Body, BadRequestException, Query } from "@nestjs/common";
+import { Controller, Delete, Get, NotFoundException, Param, Headers, Req, Post, Body, BadRequestException, Query, Patch } from "@nestjs/common";
 import {Request} from "express";
 
 import * as qr from 'qrcode'
@@ -15,6 +15,14 @@ export class GamesController {
   @Post('/game/:gameId/player')
   postGamePlayerByGameId(@Param('gameId') gameId: string, @Body() player: Player) {
     return this.gamesSvc.joinGame(gameId, player.name)
+  }
+
+  @Patch('/game/:gameId/start')
+  postGameByGameId(@Param('gameId') gameId: string
+      , @Headers('X-Game-Passwsord') password: string = 'abc') {
+
+    //TODO: start game
+
   }
 
   @Delete('/game/:gameId/player')

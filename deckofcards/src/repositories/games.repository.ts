@@ -13,9 +13,16 @@ export class GamesRepository {
     this.games = _client.db().collection<Game>('games')
   }
 
-  createGame(game: Game, ex: HttpException = null) {
+  createGame(game: Game) {
     // @ts-ignore
     return this.games.insertOne({ _id: game.gameId, ...game })
+  }
+
+  startGame(gameId: string, password: string) {
+    return this.games.updateOne(
+      { gameId, password },
+      { $set: { started: true } }
+    ).then(result => result.modifiedCount == 1)
   }
 
   addPlayerToGame(gameId: string, player: Player): Promise<boolean> {

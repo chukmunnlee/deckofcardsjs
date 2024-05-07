@@ -7,6 +7,7 @@ export interface GameState {
   role: string // admin or player
   name?: string
   password: string
+  players: string[]
   status: GameStatus
 }
 
@@ -19,6 +20,7 @@ const INIT_STATE: GameState = {
   role: "",
   name: "",
   password: "",
+  players: [],
   status: {
     gameId: "", deckId: "",
     count: -1, split: -1,
@@ -70,6 +72,17 @@ export class GameStore extends ComponentStore<GameState> {
     }
   )
 
+  readonly updatePlayers = this.updater<string[]>(
+    (state: GameState, players: string[]) => {
+      return { ...state, players }
+    }
+  )
+  readonly removePlayer = this.updater<string>(
+    (state: GameState, player: string) => {
+      return { ...state, players: state.players.filter(p => p != player) }
+    }
+  )
+
   // Queries
   readonly gameId$ = this.select<string>(
     (store: GameState) => store.status.gameId
@@ -89,6 +102,10 @@ export class GameStore extends ComponentStore<GameState> {
 
   readonly isAdmin$ = this.select<boolean>(
     (store: GameState) => (!store.role? false: store.role === 'admin')
+  )
+
+  readonly players$ = this.select<string[]>(
+    (store: GameState) => store.players
   )
 
   readonly dump$ = this.select<GameState>(
