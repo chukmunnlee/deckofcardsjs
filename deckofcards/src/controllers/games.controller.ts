@@ -3,9 +3,10 @@ import {Request} from "express";
 
 import * as qr from 'qrcode'
 
-import {DeleteGameResponse, GetGameQRCodeResponse, LeaveGameResponse} from "common/models/response";
+import {DeleteGameResponse, GetGameQRCodeResponse, JoinGameAsPlayerResponse, LeaveGameResponse, StartGameResponse} from "common/models/response";
 import {GamesService} from "src/services/games.service";
 import {Player} from "common/models/game";
+import {PatchJoinGameByPlayer} from "common/models/request";
 
 @Controller()
 export class GamesController {
@@ -18,12 +19,33 @@ export class GamesController {
   }
 
   @Patch('/game/:gameId/start')
-  postGameByGameId(@Param('gameId') gameId: string
-      , @Headers('X-Game-Passwsord') password: string = 'abc') {
+  patchGameByGameIdStart(@Param('gameId') gameId: string
+      , @Headers('X-Game-Password') password: string = 'abc') {
 
-    //TODO: start game
-
+    return this.gamesSvc.startGame(gameId, password, 
+          new BadRequestException(`Cannot start game ${gameId}`))
+        .then(result => {
+          if (!result)
+            throw new BadRequestException(`Cannot start game ${gameId}`)
+          return { gameId } as StartGameResponse
+        })
   }
+
+  @Patch('/game/:gameId/player')
+  patchGameByIdPlayer(@Param('gameId') gameId: string
+      , @Body() payload: PatchJoinGameByPlayer, @Headers('X-Game-Password') password: string = 'abc') {
+
+    return this.gamesSvc.startGameAsPlayer(gameId, payload.name, password)
+        .then(sessionKey => {
+          if (!sessionKey)
+            throw new BadRequestException(`Player ${payload.name} is not in this game ${gameId}`)
+          return { gameId, name: payload.name, sessionKey } as JoinGameAsPlayerResponse
+        })
+        .catch(errMsg => {
+          throw new BadRequestException(errMsg)
+        })
+  }
+
 
   @Delete('/game/:gameId/player')
   deleteGamePlayerByGameId(@Param('gameId') gameId: string

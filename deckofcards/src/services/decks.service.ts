@@ -69,7 +69,8 @@ export class DecksService {
       shuffle: options.shuffle,
       replacement: options.replacement,
       started: false,
-      players: []
+      players: [],
+      sessionKey: ''
     }
 
     return this.gamesRepo.createGame(game).then(() => game)

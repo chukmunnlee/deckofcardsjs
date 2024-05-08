@@ -21,9 +21,19 @@ export interface LeaveGameResponse {
   name: string
 }
 
+export interface StartGameResponse {
+  gameId: string
+}
+
 export interface GetPlayersInGame {
   gameId: string
   players: Player[]
+}
+
+export interface JoinGameAsPlayerResponse {
+  gameId: string
+  name: string
+  sessionKey: string
 }
 
 export interface GetGameQRCodeResponse {

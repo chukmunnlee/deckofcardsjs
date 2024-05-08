@@ -13,6 +13,7 @@ export interface Game {
   password: string
   started: boolean
   players: Player[]
+  sessionKey: string
 }
 
 export interface Pile {

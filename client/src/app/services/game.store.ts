@@ -9,6 +9,7 @@ export interface GameState {
   password: string
   players: string[]
   status: GameStatus
+  sessionKey: string
 }
 
 export interface InitGameState {
@@ -26,7 +27,8 @@ const INIT_STATE: GameState = {
     count: -1, split: -1,
     shuffle: false, replacement: false,
     piles: { },
-  }
+  },
+  sessionKey: ""
 }
 
 @Injectable()
@@ -65,6 +67,12 @@ export class GameStore extends ComponentStore<GameState> {
     }
   )
 
+  readonly updateSessionKey = this.updater<string>(
+    (state: GameState, sessionKey: string) => ({
+      ...state, sessionKey
+    })
+  )
+
   // Use with caution, only for players in waiting state
   readonly setGameId = this.updater<string>(
     (state: GameState, gameId: string) => {
@@ -77,6 +85,7 @@ export class GameStore extends ComponentStore<GameState> {
       return { ...state, players }
     }
   )
+
   readonly removePlayer = this.updater<string>(
     (state: GameState, player: string) => {
       return { ...state, players: state.players.filter(p => p != player) }

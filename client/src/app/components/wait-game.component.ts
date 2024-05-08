@@ -26,7 +26,6 @@ export class WaitGameComponent implements OnInit {
   name = ''
   errorText = ''
   image$!: Promise<GetGameQRCodeResponse>
-  //players$!: Observable<Player[] | undefined>
   players$!: Observable<string[]>
 
   private _cannotStart = true
@@ -43,15 +42,15 @@ export class WaitGameComponent implements OnInit {
     this.name = this.activatedRoute.snapshot.queryParams['name'] || 'NO SET'
   }
 
-  share() {
+  share(shareText: string) {
     this.gameSvc.share({
       title: 'Deck of Cards',
       text: `GameId: ${this.gameId}`,
-      url: this.qr.url
+      url: shareText
     })
   }
-  copyToClipBoard() {
-    navigator.clipboard.writeText(this.gameId)
+  copyToClipBoard(shareText: string) {
+    navigator.clipboard.writeText(shareText)
   }
 
   removePlayer(name: string) {
@@ -75,6 +74,12 @@ export class WaitGameComponent implements OnInit {
     return this._cannotStart
   }
   start() {
+    firstValueFrom(this.gameStore.password$)
+      .then(password => this.gameSvc.startGame(this.gameId, password))
+      .then(() => this.router.navigate(['/play-game', this.gameId]))
+      .catch(error => {
+        this.errorText = error.error.message
+      })
   }
   back() {
     firstValueFrom(this.gameStore.password$)

@@ -1,0 +1,28 @@
+<div class="row mt-5">
+  <div class="col">
+    <div class="d-flex justify-content-around">
+      <button type="button" class="btn btn-danger btn-lg" (click)="back()">
+        Leave Game
+      </button>
+    </div>
+  </div>
+  <div class="col">
+    <div class="d-flex justify-content-center">
+      <h1>
+        Game Id: <code>{{ gameId }}</code>
+      </h1>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col">
+    <h1>Game Started</h1>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="row">
+    <app-error-message [text]="errorText"></app-error-message>
+  </div>
+</div>

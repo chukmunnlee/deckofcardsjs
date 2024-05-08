@@ -22,3 +22,7 @@ export interface PatchGameDrawCard {
   // draw cards by code, takes precedence over position
   codes?: string[]
 }
+
+export interface PatchJoinGameByPlayer {
+  name: string
+}

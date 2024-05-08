@@ -19,6 +19,7 @@ services:
 
   deckofcards:
     image: chukmunnlee/deckofcards:v0.0.2
+    restart: always
     build: .
     environment:
     - MONGODB_URI=mongodb://root:root@mongo:27017/deckofcards?authSource=admin

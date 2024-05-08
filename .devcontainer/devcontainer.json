@@ -18,5 +18,11 @@
 	"postAttachCommand": {
 		"angular": "cd client && npm i",
 		"nestjs": "cd deckofcards && npm i --force"
+	},
+
+	"runArgs": [ "--network=mynet" ],
+
+	"containerEnv": {
+		"MONGODB_URI": "mongodb://root:root@mongo:27017/deckofcards?authSource=admin"
 	}
 }

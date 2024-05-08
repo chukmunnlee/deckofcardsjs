@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid'
+
 import {HttpException, Injectable} from "@nestjs/common";
 
 import {Collection, MongoClient} from "mongodb";
@@ -19,10 +21,15 @@ export class GamesRepository {
   }
 
   startGame(gameId: string, password: string) {
+    const sessionKey = uuidv4().replaceAll('-', '').substring(8, 16)
     return this.games.updateOne(
       { gameId, password },
-      { $set: { started: true } }
-    ).then(result => result.modifiedCount == 1)
+      { $set: { 
+          started: true, 
+          lastUpdate: (new Date()).getTime(),
+          sessionKey } 
+      }
+    ).then(result => result.modifiedCount >= 1)
   }
 
   addPlayerToGame(gameId: string, player: Player): Promise<boolean> {
@@ -56,7 +63,7 @@ export class GamesRepository {
 
   getPlayersByGameId(gameId: string) {
     // @ts-ignore
-    return this.games.find<Game[]>({ _id: gameId })
+    return this.games.find<Game[]>({ gameId })
         .project({ _id: 0, "players.name": 1 })
         .toArray()
         .then(results => {
@@ -72,8 +79,7 @@ export class GamesRepository {
   }
 
   deleteGameById(gameId: string, password: string): Promise<boolean> {
-    // @ts-ignore
-    return this.games.deleteOne({ _id: gameId, password })
+    return this.games.deleteOne({ gameId, password })
         .then(result => result.deletedCount > 0)
   }
 

@@ -37,10 +37,8 @@ export class JoinGameComponent implements OnInit {
       .then(result => {
         this.gameStore.initPlayer({ name: details.name, password: result.password })
         this.gameStore.setGameId(details.gameId)
-        // TODO navigate to player-waiting page
         const queryParams: any = {}
-        if (!!this.name)
-          queryParams['name'] = this.name
+        queryParams['name'] = !!this.name? this.name: details.name
 
         this.router.navigate(['/wait-start', details.gameId ], { queryParams })
       })

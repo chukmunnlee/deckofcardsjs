@@ -1,7 +1,7 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable, inject} from "@angular/core";
 import {GameStatus} from "common/models/game";
-import {DeleteGameResponse, GetGameQRCodeResponse, GetPlayersInGame, JoinGameResponse} from "common/models/response";
+import {DeleteGameResponse, GetGameQRCodeResponse, GetPlayersInGame, JoinGameAsPlayerResponse, JoinGameResponse, StartGameResponse} from "common/models/response";
 import {firstValueFrom, map} from "rxjs";
 
 @Injectable()
@@ -19,6 +19,22 @@ export class GameService {
   joinGameById(gameId: string, name: string) {
     return firstValueFrom(
       this.http.post<JoinGameResponse>(`/api/game/${gameId}/player`, { name })
+    )
+  }
+
+  startGame(gameId: string, password: string) {
+    const headers = new HttpHeaders()
+        .set('X-Game-Password', password)
+    return firstValueFrom(
+      this.http.patch<StartGameResponse>(`/api/game/${gameId}/start`, {}, { headers })
+    )
+  }
+
+  startGameAsPlayer(gameId: string, name: string, password: string) {
+    const headers = new HttpHeaders()
+        .set('X-Game-Password', password)
+    return firstValueFrom(
+      this.http.patch<JoinGameAsPlayerResponse>(`/api/game/${gameId}/player`, { name }, { headers })
     )
   }
 

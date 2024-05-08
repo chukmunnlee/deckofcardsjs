@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { BadRequestException, HttpException, Injectable, NotFoundException} from "@nestjs/common";
 import {Card} from "common/models/deck";
-import {GameStatus, Player} from "common/models/game";
+import {Game, GameStatus, Player} from "common/models/game";
 import {PatchGameDrawCard} from "common/models/request";
 import {GetPlayersInGame, JoinGameResponse, PatchGameDrawCardResponse} from "common/models/response";
 import {GamesRepository} from "src/repositories/games.repository";
@@ -34,12 +34,8 @@ export class GamesService {
         })
   }
 
-  normalize(text: string): string {
-   return text.trim().toLowerCase()
-  }
-
   startGame(gameId: string, password: string, ex: HttpException = null) {
-    this.gamesRepo.startGame(gameId, password)
+    return this.gamesRepo.startGame(gameId, password)
         .then(result => {
           if (result)
             return result
@@ -47,6 +43,22 @@ export class GamesService {
             throw ex
           return false
         })
+  }
+
+  async startGameAsPlayer(gameId: string, name: string, password: string) {
+    const game: Game = await this.gamesRepo.getGameById(gameId)
+    if (!game)
+      throw `Cannot find game: ${gameId}`
+
+    if (!game.started)
+      throw `Game has not start`
+
+    const _name = this.normalize(name)
+    const found = game.players.findIndex(
+      player => (this.normalize(player.name) == _name) && (player.password == password)) >= 0
+    if (found)
+      return game.sessionKey
+    return undefined
   }
 
   leaveGame(gameId: string, player: Player) {
@@ -180,5 +192,9 @@ export class GamesService {
       return Promise.reject(`Cannot update game ${gameId}`)
 
     return { pileName: srcPile, remaining: remain.length, drawn }
+  }
+
+  private normalize(text: string): string {
+   return text.trim().toLowerCase()
   }
 }

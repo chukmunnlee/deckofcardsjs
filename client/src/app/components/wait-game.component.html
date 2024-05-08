@@ -3,11 +3,15 @@
     <div class="d-flex justify-content-center">
       <h1>
         Game Id: <code>{{ gameId }}</code>
-        <i id="clipboard" class="bi bi-clipboard ms-2 fs-3" (click)="copyToClipBoard()"></i>
+          @if (canShare) {
+            <i class="bi bi-share-fill ms-2" (click)="share(gameId)"></i>
+          }
+        <i id="clipboard" class="bi bi-clipboard ms-2 fs-3" (click)="copyToClipBoard(gameId)"></i>
       </h1>
     </div>
   </div>
 </div>
+
 <div class="row mt-1">
   <div class="col">
     <div class="d-flex justify-content-center">
@@ -26,8 +30,9 @@
         <h4>
           <code>{{ qrCode.url }}</code>
           @if (canShare) {
-            <i class="bi bi-share-fill ms-2" (click)="share()"></i>
+            <i class="bi bi-share-fill ms-2" (click)="share(qrCode.url)"></i>
           }
+          <i id="clipboard" class="bi bi-clipboard ms-2 fs-3" (click)="copyToClipBoard(qrCode.url)"></i>
         </h4>
       </div>
     </div>

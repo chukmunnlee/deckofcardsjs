@@ -15,6 +15,8 @@ import { WaitGameComponent } from './components/wait-game.component'
 import {JoinGameComponent} from './components/join-game.component';
 import { WaitStartComponent } from './components/wait-start.component';
 import { ErrorMessageComponent } from './components/error-message.component';
+import { PlayGameComponent } from './components/play-game.component';
+import { PlayerComponent } from './components/player.component';
 
 const appRoutes: Routes = [
   { path: '', component: MainComponent },
@@ -23,6 +25,8 @@ const appRoutes: Routes = [
   { path: 'join-game/:gameId', component: JoinGameComponent },
   { path: 'join-game', component: JoinGameComponent },
   { path: 'wait-start/:gameId', component: WaitStartComponent },
+  { path: 'play-game/:gameId', component: PlayGameComponent },
+  { path: 'player/:gameId', component: PlayerComponent },
   { path: '**', redirectTo: '/', pathMatch: 'full' }
 ]
 
@@ -31,7 +35,8 @@ const appRoutes: Routes = [
     AppComponent, MainComponent, CreateGameComponent, WaitGameComponent,
     JoinGameComponent,
     WaitStartComponent,
-    ErrorMessageComponent
+    ErrorMessageComponent,
+    PlayGameComponent, PlayerComponent
   ],
   imports: [
     BrowserModule, HttpClientModule, ReactiveFormsModule,
