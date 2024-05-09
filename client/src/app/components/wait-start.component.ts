@@ -2,7 +2,7 @@ import { Component, Input, OnInit, inject } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameService} from '../services/game.service';
 import {GameStore} from '../services/game.store';
-import {firstValueFrom, withLatestFrom} from 'rxjs';
+import {Observable, firstValueFrom, tap} from 'rxjs';
 
 @Component({
   selector: 'app-wait-start',
@@ -19,11 +19,12 @@ export class WaitStartComponent implements OnInit {
   @Input({ required: true })
   gameId = ''
 
-  name = ''
+  //name = ''
+  name$!: Observable<string>
   errorText = ''
 
   ngOnInit(): void {
-    this.name = this.activatedRoute.snapshot.queryParams['name']
+    this.name$ = this.gameStore.name$
   }
 
   back() {
@@ -35,13 +36,13 @@ export class WaitStartComponent implements OnInit {
   }
 
   start() {
-    firstValueFrom(this.gameStore.password$)
-      .then(password => this.gameSvc.startGameAsPlayer(this.gameId, this.name, password))
-      .then(result => {
-        this.gameStore.updateSessionKey(result.sessionKey).unsubscribe()
-        this.router.navigate(['/player', this.gameId])
-      })
-      .catch(error => this.errorText = error.error.message)
+    Promise.all([ firstValueFrom(this.gameStore.name$)
+        , firstValueFrom(this.gameStore.password$) ]
+    ).then(([ name, password ]) => this.gameSvc.startGameAsPlayer(this.gameId, name, password)
+    ).then(result => {
+      this.gameStore.updateSessionKey(result.sessionKey).unsubscribe()
+      this.router.navigate(['/player', this.gameId])
+    }).catch(error => this.errorText = error.error.message)
   }
 
 }

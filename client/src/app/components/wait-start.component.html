@@ -6,7 +6,8 @@
   </div>
 </div>
 
-@if (!!name) {
+
+@if (name$ | async; as name) {
   <div class="row mt-1">
     <div class="col">
       <div class="d-flex justify-content-center">

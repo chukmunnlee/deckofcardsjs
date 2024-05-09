@@ -37,10 +37,11 @@ export class JoinGameComponent implements OnInit {
       .then(result => {
         this.gameStore.initPlayer({ name: details.name, password: result.password })
         this.gameStore.setGameId(details.gameId)
-        const queryParams: any = {}
-        queryParams['name'] = !!this.name? this.name: details.name
+        //const queryParams: any = {}
+        //queryParams['name'] = !!this.name? this.name: details.name
 
-        this.router.navigate(['/wait-start', details.gameId ], { queryParams })
+        //this.router.navigate(['/wait-start', details.gameId ], { queryParams })
+        this.router.navigate(['/wait-start', details.gameId ])
       })
       .catch(error => {
         this.errorText = error.error.message

@@ -5,8 +5,9 @@
         Game Id: <code>{{ gameId }}</code>
           @if (canShare) {
             <i class="bi bi-share-fill ms-2" (click)="share(gameId)"></i>
+          } @else {
+            <i id="clipboard" class="bi bi-clipboard ms-2 fs-3" (click)="copyToClipBoard(gameId)"></i>
           }
-        <i id="clipboard" class="bi bi-clipboard ms-2 fs-3" (click)="copyToClipBoard(gameId)"></i>
       </h1>
     </div>
   </div>
@@ -31,8 +32,9 @@
           <code>{{ qrCode.url }}</code>
           @if (canShare) {
             <i class="bi bi-share-fill ms-2" (click)="share(qrCode.url)"></i>
+          } @else {
+            <i id="clipboard" class="bi bi-clipboard ms-2 fs-3" (click)="copyToClipBoard(qrCode.url)"></i>
           }
-          <i id="clipboard" class="bi bi-clipboard ms-2 fs-3" (click)="copyToClipBoard(qrCode.url)"></i>
         </h4>
       </div>
     </div>
@@ -55,7 +57,6 @@
     } @else {
       <h3 class="text-danger-emphasis">No players yet</h3>
     }
-
   </div>
 </div>
 

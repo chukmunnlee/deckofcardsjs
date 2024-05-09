@@ -26,10 +26,7 @@ export class PlayGameComponent implements OnInit {
 
   back() {
     firstValueFrom(this.gameStore.password$)
-      .then(password => {
-        console.info('>>> password: ', password)
-        this.gameSvc.deleteGameById(this.gameId, password)
-      })
+      .then(password => this.gameSvc.deleteGameById(this.gameId, password))
       .then(() => this.router.navigate(['/']))
   }
 
