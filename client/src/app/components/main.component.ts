@@ -15,6 +15,9 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {
     this.gameStore.reset()
     this.title.setTitle('Deck of Cards')
+    screen.orientation.unlock()
+    // @ts-ignore
+    screen.orientation.lock('portrait-primary')
+        .catch((_: any) => {})
   }
-
 }

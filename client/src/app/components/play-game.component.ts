@@ -22,6 +22,10 @@ export class PlayGameComponent implements OnInit {
 
   ngOnInit(): void {
     this.title.setTitle(`GameId: ${this.gameId}`)
+    screen.orientation.unlock()
+    // @ts-ignore
+    screen.orientation.lock('landscape-primary')
+        .catch((_: any) => {})
   }
 
   back() {

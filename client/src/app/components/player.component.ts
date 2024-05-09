@@ -25,6 +25,10 @@ export class PlayerComponent implements OnInit {
   ngOnInit(): void {
     firstValueFrom(this.gameStore.name$)
       .then(name => this.title.setTitle(`Name: ${name} - ${this.gameId}`))
+    screen.orientation.unlock()
+    // @ts-ignore
+    screen.orientation.lock('landscape-primary')
+        .catch((_: any) => {})
   }
 
   back() {
