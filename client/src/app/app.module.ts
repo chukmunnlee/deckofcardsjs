@@ -17,10 +17,16 @@ import { WaitStartComponent } from './components/wait-start.component';
 import { ErrorMessageComponent } from './components/error-message.component';
 import { PlayGameComponent } from './components/play-game.component';
 import { PlayerComponent } from './components/player.component';
+import {GameRepository} from './services/game.repository';
+import { ResumeGamesComponent } from './components/resume-games.component';
+import {hasRunningGames} from './route-guards';
 
 const appRoutes: Routes = [
   { path: '', component: MainComponent },
   { path: 'create-game', component: CreateGameComponent },
+  { path: 'resume-games', component: ResumeGamesComponent,
+    canActivate: [ hasRunningGames ]
+  },
   { path: 'wait-game/:gameId', component: WaitGameComponent },
   { path: 'join-game/:gameId', component: JoinGameComponent },
   { path: 'join-game', component: JoinGameComponent },
@@ -36,13 +42,13 @@ const appRoutes: Routes = [
     JoinGameComponent,
     WaitStartComponent,
     ErrorMessageComponent,
-    PlayGameComponent, PlayerComponent
+    PlayGameComponent, PlayerComponent, ResumeGamesComponent
   ],
   imports: [
     BrowserModule, HttpClientModule, ReactiveFormsModule,
     RouterModule.forRoot(appRoutes, { useHash: true, bindToComponentInputs: true })
   ],
-  providers: [ DeckService, GameService, GameStore ],
+  providers: [ DeckService, GameService, GameStore, GameRepository ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

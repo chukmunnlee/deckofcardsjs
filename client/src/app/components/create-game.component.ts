@@ -7,10 +7,7 @@ import {DeckPresets, DeckSummary} from 'common/models/deck';
 import {Router} from '@angular/router';
 import {GameStore} from '../services/game.store';
 import {GameService} from '../services/game.service';
-
-const PRESET_DEFAULTS: DeckPresets = {
-  count: 1, split: 1, shuffle: true, replacement: false
-}
+import {GameRepository, RunningGame, WAIT_GAME} from '../services/game.repository';
 
 @Component({
   selector: 'app-list-decks',
@@ -21,6 +18,7 @@ export class CreateGameComponent implements OnInit {
 
   private readonly deckSvc = inject(DeckService)
   private readonly gameSvc = inject(GameService)
+  private readonly gameRepo = inject(GameRepository)
   private readonly fb = inject(FormBuilder)
   private readonly gameStore = inject(GameStore)
   private readonly router = inject(Router)
@@ -60,6 +58,21 @@ export class CreateGameComponent implements OnInit {
       .then(result =>
         Promise.all([ result.password, this.gameSvc.getGameStatusById(result.gameId) ])
       )
+      .then(results => {
+        const runningGame: RunningGame = {
+            deckId: this.decks[idx].deckId,
+            deckName: this.decks[idx].name,
+            gameId: results[1].gameId,
+            password: results[0],
+            sessionKey: '',
+            name: 'admin',
+            admin: true,
+            stage: WAIT_GAME,
+            createdOn: (new Date()).getTime()
+        }
+        this.gameRepo.addGameAsAdmin(runningGame)
+        return results
+      })
       .then(results => {
         this.gameStore.initAdmin({ password: results[0] })
         this.gameStore.updateStatus(results[1])

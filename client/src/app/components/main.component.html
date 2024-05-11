@@ -9,13 +9,18 @@
 
 <div class="row mt-5">
   <div class="col">
-    <div class="d-flex justify-content-around">
+    <div class="d-grid gap-4 col-6 mx-auto">
       <button type="button" class="btn btn-success btn-lg" [routerLink]="['/create-game']">
         Create Game
       </button>
       <button type="button" class="btn btn-warning btn-lg" [routerLink]="['/join-game']">
         Join Game
       </button>
+      @if (hasRunningGames) {
+        <button type="button" class="btn btn-primary btn-lg" [routerLink]="['/resume-games']">
+          Resume Games
+        </button>
+      }
     </div>
   </div>
 </div>

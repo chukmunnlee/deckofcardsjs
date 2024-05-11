@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {GameService} from '../services/game.service';
 import {GameStore} from '../services/game.store';
 import {Observable, firstValueFrom, tap} from 'rxjs';
+import {GameRepository, PLAYER_START} from '../services/game.repository';
 
 @Component({
   selector: 'app-wait-start',
@@ -15,11 +16,11 @@ export class WaitStartComponent implements OnInit {
   readonly activatedRoute = inject(ActivatedRoute)
   readonly gameSvc = inject(GameService)
   readonly gameStore = inject(GameStore)
+  readonly gameRepo = inject(GameRepository)
 
   @Input({ required: true })
   gameId = ''
 
-  //name = ''
   name$!: Observable<string>
   errorText = ''
 
@@ -31,8 +32,9 @@ export class WaitStartComponent implements OnInit {
     Promise.all([ firstValueFrom(this.gameStore.name$)
         , firstValueFrom(this.gameStore.password$) ]
     ).then(([ name, password ]) =>
-        this.gameSvc.leaveGameByGameId(this.gameId, name, password)
-    ).then(() => this.router.navigate(['/']))
+        this.gameSvc.leaveGameByGameId(this.gameId, name, password))
+    .then(result => this.gameRepo.deleteGameById(result.gameId))
+    .then(() => this.router.navigate(['/']))
   }
 
   start() {
@@ -41,8 +43,9 @@ export class WaitStartComponent implements OnInit {
     ).then(([ name, password ]) => this.gameSvc.startGameAsPlayer(this.gameId, name, password)
     ).then(result => {
       this.gameStore.updateSessionKey(result.sessionKey).unsubscribe()
-      this.router.navigate(['/player', this.gameId])
-    }).catch(error => this.errorText = error.error.message)
+      return this.gameRepo.updateGame(this.gameId, { stage: PLAYER_START, sessionKey: result.sessionKey })
+    }).then(() => this.router.navigate(['/player', this.gameId]))
+    .catch(error => this.errorText = error.error.message)
   }
 
 }

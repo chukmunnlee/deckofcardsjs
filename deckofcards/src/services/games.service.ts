@@ -98,8 +98,8 @@ export class GamesService {
       })
   }
 
-  getDeckDescriptionFromId(gameId: string) {
-    return this.gamesRepo.getDeckDescriptionFromId(gameId
+  getDeckDescriptionFromGameId(gameId: string) {
+    return this.gamesRepo.getDeckDescriptionFromGameId(gameId
         , new NotFoundException(`Cannot find gameId ${gameId}`))
   }
 

@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {GameService} from '../services/game.service';
 import {Observable, firstValueFrom, tap} from 'rxjs';
 import {GetGameQRCodeResponse} from 'common/models/response';
-import {Player} from 'common/models/game';
+import {ADMIN_START, GameRepository} from '../services/game.repository';
 
 @Component({
   selector: 'app-wait-start',
@@ -18,6 +18,7 @@ export class WaitGameComponent implements OnInit {
 
   readonly router = inject(Router)
   readonly gameStore = inject(GameStore)
+  readonly gameRepo = inject(GameRepository)
   readonly gameSvc = inject(GameService)
   readonly activatedRoute = inject(ActivatedRoute)
 
@@ -40,6 +41,7 @@ export class WaitGameComponent implements OnInit {
     this.players$ = this.gameStore.players$
     this.canShare = this.gameSvc.canShare()
     this.name = this.activatedRoute.snapshot.queryParams['name'] || 'NO SET'
+    this.refresh()
   }
 
   share(shareText: string) {
@@ -76,6 +78,7 @@ export class WaitGameComponent implements OnInit {
   start() {
     firstValueFrom(this.gameStore.password$)
       .then(password => this.gameSvc.startGame(this.gameId, password))
+      .then(() => this.gameRepo.updateGame(this.gameId, { stage: ADMIN_START }))
       .then(() => this.router.navigate(['/play-game', this.gameId]))
       .catch(error => {
         this.errorText = error.error.message
@@ -84,6 +87,7 @@ export class WaitGameComponent implements OnInit {
   back() {
     firstValueFrom(this.gameStore.password$)
       .then(password => this.gameSvc.deleteGameById(this.gameId, password))
+      .then(result => this.gameRepo.deleteGameById(result.gameId))
       .then(() => this.router.navigate(['/']))
   }
 

@@ -73,12 +73,17 @@ export class GamesController {
 
     const proto = req.secure? 'https': 'http'
 
-    return this.gamesSvc.getDeckDescriptionFromId(gameId)
+    return this.gamesSvc.getDeckDescriptionFromGameId(gameId)
         .then(result => {
           const url = `${proto}://${host}/#/join-game/${gameId}?name=${result.name}`
           return qr.toDataURL(url)
               .then(image => ({ url, image } as GetGameQRCodeResponse))
         })
+  }
+
+  @Get('/game/:gameId/deck')
+  getDeckByGameId(@Param('gameId') gameId: string) {
+    return this.gamesSvc.getDeckDescriptionFromGameId(gameId)
   }
 
   @Get('/game/:gameId')

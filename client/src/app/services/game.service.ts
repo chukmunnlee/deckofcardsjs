@@ -1,5 +1,6 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable, inject} from "@angular/core";
+import {GetDeckDescriptionByGameId} from "common/models/deck";
 import {GameStatus} from "common/models/game";
 import {DeleteGameResponse, GetGameQRCodeResponse, GetPlayersInGame, JoinGameAsPlayerResponse, JoinGameResponse, StartGameResponse} from "common/models/response";
 import {firstValueFrom, map} from "rxjs";
@@ -52,6 +53,12 @@ export class GameService {
   getGameQRById(gameId: string) {
     return firstValueFrom(
       this.http.get<GetGameQRCodeResponse>(`/api/game/${gameId}/qr`)
+    )
+  }
+
+  getDeckFromGameId(gameId: string) {
+    return firstValueFrom(
+      this.http.get<GetDeckDescriptionByGameId>(`/api/game/${gameId}/deck`)
     )
   }
 

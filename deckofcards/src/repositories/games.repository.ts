@@ -83,7 +83,7 @@ export class GamesRepository {
         .then(result => result.deletedCount > 0)
   }
 
-  getDeckDescriptionFromId(gameId: string, ex: HttpException = null) {
+  getDeckDescriptionFromGameId(gameId: string, ex: HttpException = null) {
     return this.games.aggregate([
       { $match: { gameId } },
       { $lookup: {
