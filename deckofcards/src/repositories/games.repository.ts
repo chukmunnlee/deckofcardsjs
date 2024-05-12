@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import {HttpException, Injectable} from "@nestjs/common";
 
 import {Collection, MongoClient} from "mongodb";
-import {Game, Player} from "common/models/game";
+import {Game, Pile, Player} from "common/models/game";
 import {Card, GetDeckDescriptionByGameId} from "common/models/deck";
 
 @Injectable()
@@ -37,6 +37,17 @@ export class GamesRepository {
       { gameId },
       { $push: { players: player } }
     ).then(result => result.modifiedCount == 1)
+  }
+
+  createPile(gameId: string, pileName: string, player = false) {
+    const newPile: Pile = {
+      name: pileName, cards: [], player: true
+    }
+    const p = `piles.${pileName}`
+    return this.games.updateOne(
+      { gameId },
+      { $set: { [p]: newPile } }
+    )
   }
 
   removePlayerFromGame(gameId: string, player: Player): Promise<boolean> {

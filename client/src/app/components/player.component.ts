@@ -4,6 +4,7 @@ import {Title} from '@angular/platform-browser';
 import {firstValueFrom} from 'rxjs';
 import {GameStore} from '../services/game.store';
 import {Router} from '@angular/router';
+import {GameRepository} from '../services/game.repository';
 
 @Component({
   selector: 'app-player',
@@ -14,6 +15,7 @@ export class PlayerComponent implements OnInit {
 
   readonly gameSvc = inject(GameService)
   readonly gameStore = inject(GameStore)
+  readonly gameRepo = inject(GameRepository)
   readonly router = inject(Router)
   readonly title = inject(Title)
 
@@ -36,6 +38,7 @@ export class PlayerComponent implements OnInit {
         , firstValueFrom(this.gameStore.password$) ]
     ).then(([ name, password ]) =>
         this.gameSvc.leaveGameByGameId(this.gameId, name, password)
+    ).then(() => this.gameRepo.deleteGameById(this.gameId)
     ).then(() => this.router.navigate(['/']))
   }
 

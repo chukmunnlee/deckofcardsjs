@@ -32,38 +32,42 @@ export class ResumeGamesComponent implements OnInit {
       .then(result => {
         if (!result)
           throw `Strange. Cannot find game ${gameId}`
+
         switch (result.stage) {
           // admin
           case WAIT_GAME:
+          case ADMIN_START:
             this.gameStore.initAdmin({ password: result.password })
-            return this.gameSvc.getGameStatusById(gameId)
+            this.gameSvc.getGameStatusById(gameId)
               .then(gameStatus => {
                 this.gameStore.updateStatus(gameStatus)
-                return result
+                if (result.stage == WAIT_GAME)
+                  this.router.navigate(['/wait-game', result.gameId]
+                      , { queryParams: { name: result.deckName } })
+                else if (result.stage == ADMIN_START)
+                  this.router.navigate(['/play-game', gameId])
+                else
+                  throw `Cannot resume unknown stage: ${result.stage}`
               })
-
-          case ADMIN_START:
-            return result
+            break
 
           case WAIT_START:
+          // @ts-ignore
+          case PLAYER_START:
             this.gameStore.initPlayer({ name: result.name, password: result.password })
             this.gameStore.setGameId(result.gameId)
-            return result
+            if (result.stage == WAIT_START)
+              this.router.navigate(['/wait-start', result?.gameId ])
+            else if (result.stage == PLAYER_START)
+              this.router.navigate(['/player', gameId])
+            else
+              throw `Cannot resume unknown stage: ${result.stage}`
 
-          case PLAYER_START:
-            return result
+            break
 
           default:
             throw `Unknown stage: ${result.stage}. Cannot resume`
         }
-      })
-      .then((result) => {
-        console.info('>>> result: ', result)
-        if (result?.admin)
-          this.router.navigate(['/wait-game', result.gameId]
-              , { queryParams: { name: result.deckName } })
-        else
-          this.router.navigate(['/wait-start', result?.gameId ])
       })
       .catch(error => {
         if ('error' in error)
@@ -74,7 +78,6 @@ export class ResumeGamesComponent implements OnInit {
   }
 
   deleteGame(gameId: string, admin: boolean) {
-    console.info(`gameId: ${gameId}`)
     if (admin)
       firstValueFrom(this.gameStore.password$)
         .then(password => this.gameSvc.deleteGameById(gameId, password))

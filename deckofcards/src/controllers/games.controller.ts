@@ -42,6 +42,7 @@ export class GamesController {
           return { gameId, name: payload.name, sessionKey } as JoinGameAsPlayerResponse
         })
         .catch(errMsg => {
+          console.info('>>>> errMsg: ', errMsg)
           throw new BadRequestException(errMsg)
         })
   }
@@ -50,6 +51,7 @@ export class GamesController {
   @Delete('/game/:gameId/player')
   deleteGamePlayerByGameId(@Param('gameId') gameId: string
       , @Query() player: Player, @Query('admin') admin = false,  @Headers('X-Game-Password') password: string = 'abc') {
+
     if (admin)
       return this.gamesSvc.removePlayer(gameId, { name: player.name, password })
           .then(_ => (

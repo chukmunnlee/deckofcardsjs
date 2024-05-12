@@ -56,8 +56,14 @@ export class GamesService {
     const _name = this.normalize(name)
     const found = game.players.findIndex(
       player => (this.normalize(player.name) == _name) && (player.password == password)) >= 0
-    if (found)
+    if (found) {
+      try {
+        await this.gamesRepo.createPile(gameId, name, true)
+      } catch (err) {
+        throw err.errmsg
+      }
       return game.sessionKey
+    }
     return undefined
   }
 

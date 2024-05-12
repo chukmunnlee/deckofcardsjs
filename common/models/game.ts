@@ -19,6 +19,7 @@ export interface Game {
 export interface Pile {
   name: string
   cards: Card[]
+  player?: boolean
 }
 
 export interface Player {
