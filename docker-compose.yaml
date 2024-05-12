@@ -18,7 +18,7 @@ services:
     - mynet
 
   deckofcards:
-    image: chukmunnlee/deckofcards:v0.0.2
+    image: chukmunnlee/deckofcards:v0.0.4
     restart: always
     build: .
     environment:
