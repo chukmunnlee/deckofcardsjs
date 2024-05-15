@@ -5,6 +5,7 @@ import {firstValueFrom} from 'rxjs';
 import {GameStore} from '../services/game.store';
 import {Router} from '@angular/router';
 import {GameRepository} from '../services/game.repository';
+import {GameStatus} from 'common/models/game';
 
 @Component({
   selector: 'app-play-game',
@@ -22,12 +23,21 @@ export class PlayGameComponent implements OnInit {
   @Input()
   gameId: string = ''
 
+  status$!: Promise<GameStatus>
+
   ngOnInit(): void {
     this.title.setTitle(`GameId: ${this.gameId}`)
     screen.orientation.unlock()
     // @ts-ignore
     screen.orientation.lock('landscape-primary')
         .catch((_: any) => {})
+
+    this.status$ = this.gameSvc.getGameStatusById(this.gameId)
+      .then(status => {
+        this.gameStore.updateStatus(status)
+        console.info('>>> status: ', status)
+        return status
+      })
   }
 
   back() {
