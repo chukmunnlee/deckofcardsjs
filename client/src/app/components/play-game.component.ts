@@ -5,7 +5,11 @@ import {firstValueFrom} from 'rxjs';
 import {GameStore} from '../services/game.store';
 import {Router} from '@angular/router';
 import {GameRepository} from '../services/game.repository';
-import {GameStatus} from 'common/models/game';
+import {DeckService} from '../services/deck.service';
+
+export interface PileInfo {
+  [key: string]: number
+}
 
 @Component({
   selector: 'app-play-game',
@@ -15,6 +19,7 @@ import {GameStatus} from 'common/models/game';
 export class PlayGameComponent implements OnInit {
 
   readonly gameSvc = inject(GameService)
+  readonly deckSvc = inject(DeckService)
   readonly gameStore = inject(GameStore)
   readonly gameRepo = inject(GameRepository)
   readonly router = inject(Router)
@@ -23,7 +28,10 @@ export class PlayGameComponent implements OnInit {
   @Input()
   gameId: string = ''
 
-  status$!: Promise<GameStatus>
+  discarded = 0
+  piles: PileInfo = {}
+
+  backImage!: string
 
   ngOnInit(): void {
     this.title.setTitle(`GameId: ${this.gameId}`)
@@ -32,12 +40,20 @@ export class PlayGameComponent implements OnInit {
     screen.orientation.lock('landscape-primary')
         .catch((_: any) => {})
 
-    this.status$ = this.gameSvc.getGameStatusById(this.gameId)
-      .then(status => {
+    Promise.all([
+      this.gameSvc.getGameStatusById(this.gameId),
+      firstValueFrom(this.gameSvc.getPlayersInGame(this.gameId)),
+    ]).then(([status, players]) => {
         this.gameStore.updateStatus(status)
-        console.info('>>> status: ', status)
-        return status
+        for (let p in status.piles) {
+          let c = p.match(/^pile([0-9]+)$/)
+          if (!c)
+            continue
+          this.piles[p] = status.piles[p]
+        }
+        return this.deckSvc.getDeckBackImage(status.deckId)
       })
+      .then(backImage => this.backImage = backImage)
   }
 
   back() {

@@ -2,10 +2,10 @@ import {Injectable, inject} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 
 import {PostDeckById} from "common/models/request";
-import {CreateGameResponse} from "common/models/response";
+import {CreateGameResponse, DeckBackImageResponse} from "common/models/response";
 
 import { DeckSummary } from 'common/models/deck'
-import {firstValueFrom} from "rxjs";
+import {firstValueFrom, map} from "rxjs";
 
 @Injectable()
 export class DeckService {
@@ -21,6 +21,13 @@ export class DeckService {
   public createGame(req: PostDeckById) {
     return firstValueFrom(
       this.http.post<CreateGameResponse>('/api/deck', req)
+    )
+  }
+
+  public getDeckBackImage(deckId: string) {
+    return firstValueFrom(
+      this.http.get<DeckBackImageResponse>(`/api/deck/${deckId}/back`)
+        .pipe( map(result => result.backImage))
     )
   }
 }
