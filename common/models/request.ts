@@ -12,6 +12,10 @@ export interface PostJoinGame {
 	name: string
 }
 
+export interface PileAttribute {
+ [key: string]: string | number | boolean
+}
+
 export interface PatchGameDrawCard {
   // defaults to 1
   count?: number

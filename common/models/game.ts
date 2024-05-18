@@ -19,7 +19,7 @@ export interface Game {
 export interface Pile {
   name: string
   cards: Card[]
-  attributes?: {
+  labels?: {
     [key: string]: string | number | boolean
   }
 }

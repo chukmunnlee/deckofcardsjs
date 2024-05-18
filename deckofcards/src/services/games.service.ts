@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { BadRequestException, HttpException, Injectable, NotFoundException} from "@nestjs/common";
 import {Card} from "common/models/deck";
 import {Game, GameStatus, Player} from "common/models/game";
-import {PatchGameDrawCard} from "common/models/request";
+import {PatchGameDrawCard, PileAttribute} from "common/models/request";
 import {GetPlayersInGame, JoinGameResponse, PatchGameDrawCardResponse} from "common/models/response";
 import {GamesRepository} from "src/repositories/games.repository";
 import {shuffle} from "src/utils";
@@ -84,7 +84,7 @@ export class GamesService {
         ))
   }
 
-  getGameStatus(gameId: string) {
+  getGameStatus(gameId: string, labels: PileAttribute = undefined) {
     return this.gamesRepo.getGameById(gameId)
       .then(game => {
         if (!game)
@@ -98,8 +98,18 @@ export class GamesService {
           replacement: game.replacement,
           piles: {}
         }
-        for (let p in game.piles)
-          gameStatus.piles[p] = game.piles[p].cards.length
+
+        if (!labels)
+          for (let p in game.piles)
+            gameStatus.piles[p] = game.piles[p].cards.length
+
+        else {
+          for (let p in game.piles) {
+            for (let a in labels)
+              if (labels[a] == game.piles[p].labels[a])
+                gameStatus.piles[p] = game.piles[p].cards.length
+          }
+        }
         return gameStatus
       })
   }

@@ -49,7 +49,7 @@ export class DecksService {
     const password = id.substring(8)
 
     let piles: { [ name: string ]: Pile } = {
-      discarded: { name: 'discarded', cards: [], attributes: { common: true } }
+      discarded: { name: 'discarded', cards: [], labels: { common: 'true' } }
     }
     let cardsPerPile = Math.ceil(cards.length / options.split)
     for (let i = 0; i < options.split; i++) {
@@ -58,7 +58,7 @@ export class DecksService {
       piles[name] = { 
         name, 
         cards: cards.slice(start, start + cardsPerPile),
-        attributes: { pile: true, password }
+        labels: { pile: 'true', password }
       }
     }
 

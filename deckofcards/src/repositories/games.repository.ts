@@ -5,6 +5,7 @@ import {HttpException, Injectable} from "@nestjs/common";
 import {Collection, MongoClient} from "mongodb";
 import {Game, Pile, Player} from "common/models/game";
 import {Card, GetDeckDescriptionByGameId} from "common/models/deck";
+import {PileAttribute} from 'common/models/request';
 
 @Injectable()
 export class GamesRepository {
@@ -35,7 +36,7 @@ export class GamesRepository {
   addPlayerToGame(gameId: string, player: Player): Promise<boolean> {
     const playerPile  = {
       name: player.name, cards: [], 
-      attributes: { player: true, password: player.password }
+      labels: { player: 'true', password: player.password }
     }
     const pileName = `piles.${player.name}`
     return this.games.updateOne(
@@ -48,7 +49,7 @@ export class GamesRepository {
 
   createPile(gameId: string, pileName: string, player = false) {
     const newPile: Pile = {
-      name: pileName, cards: [], attributes: { player }
+      name: pileName, cards: [], labels: { player }
     }
     const p = `piles.${pileName}`
     return this.games.updateOne(

@@ -6,7 +6,8 @@ import * as qr from 'qrcode'
 import {DeleteGameResponse, GetGameQRCodeResponse, JoinGameAsPlayerResponse, LeaveGameResponse, StartGameResponse} from "common/models/response";
 import {GamesService} from "src/services/games.service";
 import {Player} from "common/models/game";
-import {PatchJoinGameByPlayer} from "common/models/request";
+import {PatchJoinGameByPlayer, PileAttribute} from "common/models/request";
+import {emptyObject} from "src/utils";
 
 @Controller()
 export class GamesController {
@@ -42,7 +43,6 @@ export class GamesController {
           return { gameId, name: payload.name, sessionKey } as JoinGameAsPlayerResponse
         })
         .catch(errMsg => {
-          console.info('>>>> errMsg: ', errMsg)
           throw new BadRequestException(errMsg)
         })
   }
@@ -89,8 +89,9 @@ export class GamesController {
   }
 
   @Get('/game/:gameId')
-  getGameStatusByGameId(@Param('gameId') gameId: string) {
-    return this.gamesSvc.getGameStatus(gameId)
+  getGameStatusByGameId(@Param('gameId') gameId: string
+      , @Query() labels: PileAttribute = undefined) {
+    return this.gamesSvc.getGameStatus(gameId, emptyObject(labels))
       .then(game => {
         if (!game)
           throw new NotFoundException(`Cannot find game ${gameId}`)

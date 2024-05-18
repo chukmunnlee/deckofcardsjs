@@ -3,6 +3,7 @@ import { readdirSync, existsSync, readFileSync } from 'node:fs'
 import * as yaml from 'js-yaml'
 import {Card, Deck, DeckPresets} from 'common/models/deck'
 import {MongoClient} from 'mongodb'
+import {PileAttribute} from 'common/models/request'
 
 const PRESETS_DEFAULT:  DeckPresets = {
   count: 1, split: 1, shuffle: true, replacement: false
@@ -72,4 +73,10 @@ export const toBoolean = (full: string) => {
   }
 
 export const toString = (str: string, defValue = '') => !str? defValue: str
+
+export const emptyObject = (o: PileAttribute) => {
+  if (Object.keys(o).length > 0)
+    return o
+  return undefined
+}
 
