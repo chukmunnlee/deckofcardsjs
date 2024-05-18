@@ -33,15 +33,22 @@ export class GamesRepository {
   }
 
   addPlayerToGame(gameId: string, player: Player): Promise<boolean> {
+    const playerPile  = {
+      name: player.name, cards: [], 
+      attributes: { player: true, password: player.password }
+    }
+    const pileName = `piles.${player.name}`
     return this.games.updateOne(
       { gameId },
-      { $push: { players: player } }
+      { $push: { players: player },
+        $set: { [pileName]: playerPile }
+      }
     ).then(result => result.modifiedCount == 1)
   }
 
   createPile(gameId: string, pileName: string, player = false) {
     const newPile: Pile = {
-      name: pileName, cards: [], player: true
+      name: pileName, cards: [], attributes: { player }
     }
     const p = `piles.${pileName}`
     return this.games.updateOne(
@@ -51,23 +58,29 @@ export class GamesRepository {
   }
 
   removePlayerFromGame(gameId: string, player: Player): Promise<boolean> {
+    const playerPile = `piles.${player.name}`
+    console.info(">>>> deleting player: ", playerPile)
     return this.games.updateOne(
       { gameId }, 
       {
         $pull: {
           players: { name: player.name, password: player.password }
-        }
+        },
+        $unset: { [playerPile]: "" }
       }
     ).then(result => result.modifiedCount > 0)
   }
 
   removePlayerFromGameByAdmin(gameId: string, player: Player): Promise<boolean> {
+    const playerPile = `piles.${player.name}`
+    console.info(">>>> deleting player: ", playerPile)
     return this.games.updateOne(
       { gameId, password: player.password }, 
       {
         $pull: {
           players: { name: player.name }
-        }
+        },
+        $unset: { [playerPile]: "" }
       }
     ).then(result => result.modifiedCount > 0)
   }

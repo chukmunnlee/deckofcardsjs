@@ -45,22 +45,28 @@ export class DecksService {
     if (options.shuffle)
       shuffle(cards)
 
+    const id = uuidv4().replaceAll('-', '')
+    const password = id.substring(8)
+
     let piles: { [ name: string ]: Pile } = {
-      discarded: { name: 'discarded', cards: [] }
+      discarded: { name: 'discarded', cards: [], attributes: { common: true } }
     }
     let cardsPerPile = Math.ceil(cards.length / options.split)
     for (let i = 0; i < options.split; i++) {
       const name = `pile${i}`
       const start = i * cardsPerPile
-      piles[name] = { name, cards: cards.slice(start, start + cardsPerPile) }
+      piles[name] = { 
+        name, 
+        cards: cards.slice(start, start + cardsPerPile),
+        attributes: { pile: true, password }
+      }
     }
 
     const time = (new Date()).getTime()
-    const id = uuidv4().replaceAll('-', '')
     const game: Game = {
       gameId: id.substring(0, 8),
       deckId: deck.metadata.id,
-      password: id.substring(8),
+      password,
       piles,
       createdOn: time,
       lastUpdate: time,
