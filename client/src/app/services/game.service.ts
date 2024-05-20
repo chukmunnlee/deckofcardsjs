@@ -1,4 +1,4 @@
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Injectable, inject} from "@angular/core";
 import {GetDeckDescriptionByGameId} from "common/models/deck";
 import {GameStatus} from "common/models/game";
@@ -40,8 +40,11 @@ export class GameService {
   }
 
   getGameStatusById(gameId: string) {
+    const params: HttpParams = new HttpParams()
+        .set('pile', 'true')
+        .set('common', 'true')
     return firstValueFrom(
-      this.http.get<GameStatus>(`/api/game/${gameId}`)
+      this.http.get<GameStatus>(`/api/game/${gameId}`, { params })
     )
   }
 
