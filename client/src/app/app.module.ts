@@ -9,16 +9,16 @@ import {GameService} from './services/game.service';
 import {GameStore} from './services/game.store';
 
 import { AppComponent } from './app.component';
-import { MainComponent } from './components/main.component';
-import { CreateGameComponent } from './components/create-game.component';
-import { WaitGameComponent } from './components/wait-game.component'
-import {JoinGameComponent} from './components/join-game.component';
-import { WaitStartComponent } from './components/wait-start.component';
+import { MainComponent } from './views/main.component';
+import { CreateGameComponent } from './views/create-game.component';
+import { WaitGameComponent } from './views/wait-game.component'
+import {JoinGameComponent} from './views/join-game.component';
+import { WaitStartComponent } from './views/wait-start.component';
 import { ErrorMessageComponent } from './components/error-message.component';
-import { PlayGameComponent } from './components/play-game.component';
-import { PlayerComponent } from './components/player.component';
+import { PlayGameComponent } from './views/play-game.component';
+import { PlayerComponent } from './views/player.component';
 import {GameRepository} from './services/game.repository';
-import { ResumeGamesComponent } from './components/resume-games.component';
+import { ResumeGamesComponent } from './views/resume-games.component';
 import {hasRunningGames} from './route-guards';
 
 const appRoutes: Routes = [
