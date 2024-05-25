@@ -92,6 +92,14 @@ export class GameStore extends ComponentStore<GameState> {
     }
   )
 
+  readonly updatePileCount = this.updater<{ pileName: string, count: number }>(
+    (state: GameState, update: { pileName: string, count: number}) => {
+      const newState = { ...state }
+      newState.status.piles[update.pileName] += update.count
+      return newState
+    }
+  )
+
   // Queries
   readonly gameId$ = this.select<string>(
     (store: GameState) => store.status.gameId
@@ -119,6 +127,10 @@ export class GameStore extends ComponentStore<GameState> {
 
   readonly dump$ = this.select<GameState>(
     (store: GameState) => store
+  )
+
+  readonly pileCount$ = (pileName: string) => this.select<number>(
+    (store: GameState) => store.status.piles[pileName]
   )
 
 }

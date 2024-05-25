@@ -21,6 +21,7 @@ import {GameRepository} from './services/game.repository';
 import { ResumeGamesComponent } from './views/resume-games.component';
 import {hasRunningGames} from './route-guards';
 import { DeckPileComponent } from './components/deck-pile.component';
+import {MaterialModule} from './material.module';
 
 const appRoutes: Routes = [
   { path: '', component: MainComponent },
@@ -45,7 +46,7 @@ const appRoutes: Routes = [
 
   bootstrap: [AppComponent],
 
-  imports: [BrowserModule, ReactiveFormsModule,
+  imports: [BrowserModule, ReactiveFormsModule, MaterialModule,
     RouterModule.forRoot(appRoutes, { useHash: true, bindToComponentInputs: true })],
 
   providers: [DeckService, GameService, GameStore, GameRepository,

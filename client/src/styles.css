@@ -9,3 +9,18 @@
 .mt-10 {
   margin-top: 10vh !important;
 }
+
+.pile-container {
+  display: grid;
+  grid-template-columns: [first-col];
+  grid-template-rows: [first-row];
+}
+
+.pile-stack {
+  grid-column-start: first-col;
+  grid-row-start: first-row;
+}
+
+.invert {
+  filter: sepia(100%) invert(100%);
+}
