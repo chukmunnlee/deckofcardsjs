@@ -8,7 +8,7 @@ COPY common common
 WORKDIR /app/client
 
 RUN npm i -g @angular/cli
-RUN npm ci && ng build
+RUN npm ci --force && ng build
 
 FROM node:22 AS nestbuilder
 
