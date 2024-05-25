@@ -20,6 +20,7 @@ import { PlayerComponent } from './views/player.component';
 import {GameRepository} from './services/game.repository';
 import { ResumeGamesComponent } from './views/resume-games.component';
 import {hasRunningGames} from './route-guards';
+import { DeckPileComponent } from './components/deck-pile.component';
 
 const appRoutes: Routes = [
   { path: '', component: MainComponent },
@@ -40,7 +41,7 @@ const appRoutes: Routes = [
   declarations: [ AppComponent, ErrorMessageComponent,
     MainComponent, CreateGameComponent, WaitGameComponent,
     JoinGameComponent, WaitStartComponent,
-    PlayGameComponent, PlayerComponent, ResumeGamesComponent, ],
+    PlayGameComponent, PlayerComponent, ResumeGamesComponent, DeckPileComponent, ],
 
   bootstrap: [AppComponent],
 

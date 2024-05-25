@@ -20,6 +20,9 @@
 
 <div class="row mt-3">
   <div class="col">
-    <h1>Game Started</h1>
-  </div>
+    <div class="deck">
+      @for (pile of piles | keyvalue ; track pile.key) {
+        <app-deck-pile [pile]="pile.value"></app-deck-pile>
+      }
+    </div>
 </div>

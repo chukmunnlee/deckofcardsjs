@@ -6,9 +6,10 @@ import {GameStore} from '../services/game.store';
 import {Router} from '@angular/router';
 import {GameRepository} from '../services/game.repository';
 import {DeckService} from '../services/deck.service';
+import { PileInfo } from '../models'
 
-export interface PileInfo {
-  [key: string]: number
+interface GamePiles {
+  [key: string]: PileInfo
 }
 
 @Component({
@@ -29,7 +30,7 @@ export class PlayGameComponent implements OnInit {
   gameId: string = ''
 
   discarded = 0
-  piles: PileInfo = {}
+  piles: GamePiles = {}
 
   backImage!: string
 
@@ -43,17 +44,23 @@ export class PlayGameComponent implements OnInit {
     Promise.all([
       this.gameSvc.getGameStatusById(this.gameId),
       firstValueFrom(this.gameSvc.getPlayersInGame(this.gameId)),
-    ]).then(([status, players]) => {
-        this.gameStore.updateStatus(status)
-        for (let p in status.piles) {
-          let c = p.match(/^pile([0-9]+)$/)
-          if (!c)
-            continue
-          this.piles[p] = status.piles[p]
-        }
-        return this.deckSvc.getDeckBackImage(status.deckId)
-      })
-      .then(backImage => this.backImage = backImage)
+    ])
+    .then(([status, _players ]) => {
+      this.gameStore.updateStatus(status)
+      for (let p in status.piles) {
+        let c = p.match(/^pile([0-9]+)$/)
+        if (!c)
+          continue
+        this.piles[p] = { name: p, count: status.piles[p], backImage: "" }
+      }
+      return this.deckSvc.getDeckBackImage(status.deckId)
+    })
+    .then(backImage => {
+      for (let d in this.piles) {
+        this.backImage = backImage
+        this.piles[d].backImage = backImage
+      }
+    })
   }
 
   back() {
