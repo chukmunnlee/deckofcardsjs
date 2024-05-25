@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {RouterModule, Routes} from '@angular/router';
-import {HttpClientModule} from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {ReactiveFormsModule} from '@angular/forms';
 
 import {DeckService} from './services/deck.service';
@@ -37,18 +37,16 @@ const appRoutes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    AppComponent, MainComponent, CreateGameComponent, WaitGameComponent,
-    JoinGameComponent,
-    WaitStartComponent,
-    ErrorMessageComponent,
-    PlayGameComponent, PlayerComponent, ResumeGamesComponent
-  ],
-  imports: [
-    BrowserModule, HttpClientModule, ReactiveFormsModule,
-    RouterModule.forRoot(appRoutes, { useHash: true, bindToComponentInputs: true })
-  ],
-  providers: [ DeckService, GameService, GameStore, GameRepository ],
-  bootstrap: [AppComponent]
-})
+  declarations: [ AppComponent, ErrorMessageComponent,
+    MainComponent, CreateGameComponent, WaitGameComponent,
+    JoinGameComponent, WaitStartComponent,
+    PlayGameComponent, PlayerComponent, ResumeGamesComponent, ],
+
+  bootstrap: [AppComponent],
+
+  imports: [BrowserModule, ReactiveFormsModule,
+    RouterModule.forRoot(appRoutes, { useHash: true, bindToComponentInputs: true })],
+
+  providers: [DeckService, GameService, GameStore, GameRepository,
+    provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
