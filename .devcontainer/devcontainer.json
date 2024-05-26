@@ -16,7 +16,7 @@
 	},
 
 	"postAttachCommand": {
-		"angular": "cd client && npm i",
+		"angular": "cd client && npm i --force",
 		"nestjs": "cd deckofcards && npm i --force"
 	},
 
@@ -24,8 +24,5 @@
 
 	"containerEnv": {
 		"MONGODB_URI": "mongodb://root:root@mongo:27017/deckofcards?authSource=admin"
-	},
-
-	"dockerComposeFile": "../docker-compose.yaml" ,
-	"service": "mongo"
+	}
 }
